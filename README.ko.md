@@ -15,6 +15,9 @@ Threads(스레드) 글쓰기용 에이전트 스킬 모음. **Claude Code와 Cod
 | 스킬 | 하는 일 |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Threads 글의 줄바꿈·문단을 실측 패턴대로 다듬고, 위반을 검사 스크립트로 잡아낸다 |
+| [`alt-text-generator`](alt-text-generator/) | 이미지의 한국어 대체 텍스트를 만든다. 핵심 정보를 앞에 두고, 이미지 속 글자는 그대로 옮기고, plain text와 `alt="…"` 두 형태로 준다 |
+
+`alt-text-generator`는 Threads 전용이 아니다. 블로그·웹사이트 이미지에도 그대로 쓴다. 용도(웹 접근성/SNS/블로그)에 따라 톤과 길이를 다르게 잡는다.
 
 ---
 
@@ -63,8 +66,8 @@ cd threads-writing-skills
 
 `install.sh`는 저장소를 지우지 않고 **심볼릭 링크만** 건다:
 
-- **Claude Code** → `~/.claude/skills/threads-linebreak`
-- **Codex** → `~/.codex/AGENTS.md`에 스킬 경로 한 줄 추가
+- **Claude Code** → `~/.claude/skills/<스킬이름>`
+- **Codex** → `~/.codex/AGENTS.md`에 스킬 경로 추가
 
 이후 `git pull` 한 번이면 양쪽 다 갱신된다.
 
