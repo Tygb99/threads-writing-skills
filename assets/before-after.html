@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: 'Pretendard Variable';
+    src: url('/Users/tygb99/.local/share/fonts-pretendard/PretendardVariable.woff2') format('woff2-variations');
+    font-weight: 45 920;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard Variable', -apple-system, sans-serif;
+    background: #0d0d0f;
+    color: #f2f2f4;
+    width: 1200px;
+    padding: 44px 40px 38px;
+  }
+  h1 { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; }
+  .sub { margin-top: 8px; font-size: 15px; color: #8d8d96; font-weight: 450; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 30px; align-items: start; }
+  .card { background: #16161a; border: 1px solid #26262c; border-radius: 16px; padding: 22px 24px 24px; }
+  .card.bad { border-color: #4a2326; }
+  .card.good { border-color: #1e4a34; }
+  .tag { display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em;
+         padding: 5px 11px; border-radius: 999px; }
+  .bad .tag { background: #3a1c1f; color: #ff8e93; }
+  .good .tag { background: #16382a; color: #62dfa0; }
+  .post { margin-top: 18px; font-size: 16.5px; line-height: 1.62; font-weight: 450; white-space: pre-wrap; }
+  .post .hash { color: #6f9dff; }
+  .over { background: rgba(255, 92, 100, 0.13); border-bottom: 1.5px solid #ff5c64; border-radius: 3px; }
+  .metrics { margin-top: 20px; padding-top: 16px; border-top: 1px solid #26262c;
+             display: flex; gap: 26px; font-size: 13.5px; }
+  .metrics div span { display: block; color: #77777f; font-size: 12px; margin-bottom: 3px; font-weight: 450; }
+  .bad .metrics b { color: #ff8e93; }
+  .good .metrics b { color: #62dfa0; }
+  .metrics b { font-weight: 700; font-size: 15px; }
+  .foot { margin-top: 26px; font-size: 13.5px; color: #77777f; font-weight: 450; }
+  .foot code { color: #b9b9c2; background: #1c1c22; padding: 2px 7px; border-radius: 5px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+  <h1>같은 글, 줄바꿈만 다르다</h1>
+  <div class="sub">본문 글자 수는 152자로 동일하다. 줄바꿈은 길이를 바꾸지 않고 읽는 속도만 바꾼다.</div>
+
+  <div class="grid">
+    <div class="card bad">
+      <span class="tag">BEFORE</span>
+      <div class="post"><span class="over">안드로이드 폰을 PC의 트랙패드로 만드는 앱을 만들었는데, 손이 안 움직이는 내가 쓸 입력 도구를 직접 짜야 했다.</span>
+<span class="over">크롬 원격은 구글이 죽였고, 다른 앱은 거의 모두 PC에 서버를 깔아야 했다.</span>
+<span class="over">윈도우 11도, 내 Mac mini도 데스크톱 앱 없이 받아줬다. <span class="hash">#장애인 #도전</span></span></div>
+      <div class="metrics">
+        <div><span>40자 이하 줄</span><b>0%</b></div>
+        <div><span>1~2줄 문단</span><b>0%</b></div>
+        <div><span>검사 결과</span><b>5건 지적</b></div>
+      </div>
+    </div>
+
+    <div class="card good">
+      <span class="tag">AFTER</span>
+      <div class="post">안드로이드 폰을 PC의 트랙패드로
+만드는 앱을 만들었다.
+
+손이 안 움직이는 내가 쓸 입력 도구를
+직접 짜야 했다.
+
+크롬 원격은 구글이 죽였고,
+다른 앱은 거의 모두 PC에 서버를 깔아야 했다.
+
+윈도우 11도, 내 Mac mini도,
+데스크톱 앱 없이 받아줬다.
+
+<span class="hash">#장애인 #도전</span></div>
+      <div class="metrics">
+        <div><span>40자 이하 줄</span><b>100%</b></div>
+        <div><span>1~2줄 문단</span><b>100%</b></div>
+        <div><span>검사 결과</span><b>통과</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    빨간 줄 = 40자 초과. 절 경계 쉼표(<code>죽였고,</code> <code>Mac mini도,</code>)에서만 줄을 바꾸고, 나열 쉼표(<code>윈도우 11도,</code>)는 그대로 둔다.
+    판정은 <code>python3 scripts/check_linebreaks.py draft.txt</code>.
+  </div>
+</body>
+</html>
