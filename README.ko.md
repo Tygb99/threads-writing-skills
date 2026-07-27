@@ -15,6 +15,7 @@ Threads(스레드) 글쓰기용 에이전트 스킬 모음. **Claude Code와 Cod
 | 스킬 | 하는 일 |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Threads 글의 줄바꿈·문단을 실측 패턴대로 다듬고, 위반을 검사 스크립트로 잡아낸다 |
+| [`threads-web-publish`](threads-web-publish/) | Threads 웹을 브라우저 자동화로 조작해 올리고 예약·수정하는 절차. 사진 첨부·alt 입력·자답글 체인과, 모르면 글이 유실되는 함정들 |
 | [`alt-text-generator`](alt-text-generator/) | 이미지의 한국어 대체 텍스트를 만든다. 핵심 정보를 앞에 두고, 이미지 속 글자는 그대로 옮기고, plain text와 `alt="…"` 두 형태로 준다 |
 
 `alt-text-generator`는 Threads 전용이 아니다. 블로그·웹사이트 이미지에도 그대로 쓴다. 용도(웹 접근성/SNS/블로그)에 따라 톤과 길이를 다르게 잡는다.

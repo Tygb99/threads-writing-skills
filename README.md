@@ -17,6 +17,7 @@ Both sides are 152 characters. Line breaks don't change length. They change read
 | Skill | What it does |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Shapes line breaks and paragraphs to the measured pattern, and ships a checker that catches violations |
+| [`threads-web-publish`](threads-web-publish/) | The operational procedure for driving Threads on the web with browser automation — scheduling, photo attachment, alt text, self-reply chains, and the traps that silently eat your post |
 | [`alt-text-generator`](alt-text-generator/) | Writes Korean alt text for an image — front-loads the key information, transcribes text inside the image, and returns both plain text and an `alt="…"` attribute |
 
 ---
