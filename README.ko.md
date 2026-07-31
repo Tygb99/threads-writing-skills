@@ -15,10 +15,21 @@ Threads(스레드) 글쓰기용 에이전트 스킬 모음. **Claude Code와 Cod
 | 스킬 | 하는 일 |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Threads 글의 줄바꿈·문단을 실측 패턴대로 다듬고, 위반을 검사 스크립트로 잡아낸다 |
-| [`threads-web-publish`](threads-web-publish/) | Threads 웹을 브라우저 자동화로 조작해 올리고 예약·수정하는 절차. 사진 첨부·alt 입력·자답글 체인과, 모르면 글이 유실되는 함정들 |
+| [`threads-web-publish`](threads-web-publish/) | Threads 웹을 브라우저 자동화로 조작해 올리고 예약·수정하는 절차. 절대 규칙 4개와 발행 전 점검은 `SKILL.md`에, 상황별 상세는 `references/` 4개 문서에 나눠 두었다 |
 | [`alt-text-generator`](alt-text-generator/) | 이미지의 한국어 대체 텍스트를 만든다. 핵심 정보를 앞에 두고, 이미지 속 글자는 그대로 옮기고, plain text와 `alt="…"` 두 형태로 준다 |
 
 `alt-text-generator`는 Threads 전용이 아니다. 블로그·웹사이트 이미지에도 그대로 쓴다. 용도(웹 접근성/SNS/블로그)에 따라 톤과 길이를 다르게 잡는다.
+
+### `threads-web-publish` 상세 문서
+
+`SKILL.md`는 매번 읽는 절대 규칙 4개와 발행 전 점검만 담는다. 하는 일에 맞는 문서만 열어 본다.
+
+| 문서 | 다루는 것 |
+|---|---|
+| `references/composing.md` | 본문·자답글 입력, 사진 첨부, alt 텍스트, 캐럿·스크롤 함정 |
+| `references/scheduling.md` | 예약 발행, 예약 글 다시 찾기, 인용카드, API 예약 불가 |
+| `references/recovery.md` | 잘못 올린 글 수정, 답글 고정, 되돌릴 수 없는 클릭 |
+| `references/dm-source.md` | DM 대화를 글 소재로 정리 (발화자·입력 경로 분류) |
 
 ---
 

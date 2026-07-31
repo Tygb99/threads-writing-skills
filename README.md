@@ -17,8 +17,19 @@ Both sides are 152 characters. Line breaks don't change length. They change read
 | Skill | What it does |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Shapes line breaks and paragraphs to the measured pattern, and ships a checker that catches violations |
-| [`threads-web-publish`](threads-web-publish/) | The operational procedure for driving Threads on the web with browser automation — scheduling, photo attachment, alt text, self-reply chains, and the traps that silently eat your post |
+| [`threads-web-publish`](threads-web-publish/) | The operational procedure for driving Threads on the web with browser automation. `SKILL.md` holds the four hard rules and the pre-publish checklist; situational detail lives in four `references/` documents |
 | [`alt-text-generator`](alt-text-generator/) | Writes Korean alt text for an image — front-loads the key information, transcribes text inside the image, and returns both plain text and an `alt="…"` attribute |
+
+### `threads-web-publish` reference documents
+
+`SKILL.md` carries only the four rules you apply every time plus the pre-publish checklist. Open the one document that matches the task at hand.
+
+| Document | Covers |
+|---|---|
+| `references/composing.md` | Body and self-reply input, photo attachment, alt text, caret and scroll traps |
+| `references/scheduling.md` | Scheduling, finding a scheduled post again, quote cards, why the API cannot schedule |
+| `references/recovery.md` | Fixing a published post, pinning replies, clicks you cannot undo |
+| `references/dm-source.md` | Turning a DM thread into post material (attributing speakers and input paths) |
 
 ---
 
