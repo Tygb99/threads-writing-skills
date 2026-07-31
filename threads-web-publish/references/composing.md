@@ -42,6 +42,43 @@ document.execCommand('delete');
 
 잘림이 나도 잃는 건 `.` 하나다. 지우기 전후로 `innerText` 앞부분을 찍어 확인한다.
 
+### ⚠️ 가드 절차는 글자 수 검증을 무력화한다 (2026-08-01, Aside repl)
+
+가드 `.`을 지우는 절차에는 함정이 하나 붙어 있다. **타이핑 중 글자가 유실되면 가드를 지운 것이 그 손실을 상쇄해 글자 수가 맞아떨어진다.**
+
+실제로 겪은 것: 본문을 타이핑하고 가드를 지운 뒤 218자가 초안과 정확히 일치해 검증을 통과시켰다. 그런데 예약 저장 후 다시 열어보니 `코드가 /opt/.manus`가 **`드가 /opt/.manus`**로 저장돼 있었다. 중간에서 `코` 한 글자가 날아갔고, 앞에서 `.` 한 글자를 지운 것이 정확히 -1 +1로 맞춰준 것이다.
+
+즉 **글자 수 일치는 무결성 증명이 아니다.** 가드를 쓰는 이상 이 상쇄는 구조적으로 일어날 수 있다. 검증은 초안 문자열과 `innerText`를 **문자 단위로 비교**한다:
+
+```javascript
+const got = el.innerText.replace(/\s+$/, "");
+const exp = draft.replace(/\s+$/, "");
+if (got !== exp) {
+  for (let k = 0; k < Math.max(got.length, exp.length); k++) {
+    if (got[k] !== exp[k]) {
+      console.log("first diff at", k, JSON.stringify(got.slice(k-10, k+10)), "vs", JSON.stringify(exp.slice(k-10, k+10)));
+      break;
+    }
+  }
+}
+```
+
+고치는 것은 캐럿을 손실 지점 앞에 Range로 두고 빠진 글자만 타이핑하면 된다. 예약 배너가 붙은 편집 모드에서도 먹히고 이미지와 alt는 유지된다(실측: alt 67자·384자, 이미지 2장 보존). 마지막에 `업데이트`를 눌러야 반영된다.
+
+```javascript
+const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+let n;
+while ((n = w.nextNode())) {
+  const i = n.textContent.indexOf("드가 /opt/.manus");   // 손실된 뒤의 문자열
+  if (i !== -1) {
+    const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    break;
+  }
+}
+// 이 상태에서 빠진 글자만 타이핑한다
+```
+
 한글은 **리터럴로 넘긴다.** 도구 인자에 `\uXXXX` 이스케이프로 넘기면 코드포인트를 틀려 오타가 난다(블로그→바로그, 간격→간겁). 게시 전에 전문을 검증하고, 오타는 TreeWalker로 텍스트 노드를 찾아 Range 선택 후 `insertText`로 교체한다.
 
 ### 해시태그 — 공백이 경계를 만든다
