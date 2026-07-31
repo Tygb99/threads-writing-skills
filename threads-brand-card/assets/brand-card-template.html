@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<!--
+  Threads 브랜드 카드 템플릿
+  - 기본 1080x1350. 실사진(3:4)과 같이 올릴 때는 body의 height를 1440으로 바꾼다.
+  - 브랜드 바(.brand)의 대문자 플레이스홀더는 brand.local.md 값으로 채운다. 구조와 스타일은 고치지 않는다.
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; letter-spacing: 0; }
+  body {
+    width: 1080px; height: 1350px;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: #0f1115; color: #e9edf4;
+    padding: 74px 68px 62px;
+    display: flex; flex-direction: column;
+  }
+  .eyebrow { font-size: 30px; color: #8b93a4; font-weight: 600; }
+  .headline { margin-top: 20px; font-size: 92px; font-weight: 800; line-height: 1.22; }
+  .headline .num { color: #6ee7a8; }
+  .headline .arrow { color: #5b6478; font-weight: 700; }
+  .sub { margin-top: 22px; font-size: 33px; line-height: 1.5; color: #a9b2c3; }
+
+  .rows { margin-top: 52px; display: flex; flex-direction: column; gap: 22px; }
+  .row {
+    background: #171b22; border-radius: 22px; padding: 30px 34px;
+    border-left: 8px solid #2a3140;
+  }
+  .row.warn { border-left-color: #f2708a; }
+  .row.good { border-left-color: #6ee7a8; }
+  .row-top { display: flex; align-items: baseline; gap: 18px; }
+  .row-count { font-size: 52px; font-weight: 800; }
+  .row-title { font-size: 36px; font-weight: 700; color: #dfe5ef; }
+  .row-desc { margin-top: 12px; font-size: 29px; line-height: 1.48; color: #97a0b1; }
+
+  .footer { margin-top: auto; padding-top: 38px; border-top: 2px solid #232a35; }
+  .footer .keep { font-size: 31px; color: #8b93a4; line-height: 1.45; }
+  .footer .keep b { color: #6ee7a8; font-weight: 700; }
+
+  /* ===== 브랜드 바 — 고정 ===== */
+  .brand { margin-top: 34px; display: flex; align-items: center; gap: 20px; }
+  .brand-mark {
+    width: 74px; height: 74px; flex: 0 0 74px; border-radius: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #6ee7a8;
+  }
+  .brand-text { display: flex; flex-direction: column; gap: 5px; }
+  .brand-name { font-size: 32px; font-weight: 800; color: #e9edf4; }
+  .brand-sub { font-size: 25px; color: #7c8496; }
+  .brand-link { margin-left: auto; text-align: right; }
+  .brand-link .handle { font-size: 27px; font-weight: 700; color: #6ee7a8; }
+  .brand-link .site { font-size: 24px; color: #5b6478; margin-top: 5px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">주제 라벨 · YYYY-MM-DD</div>
+  <div class="headline">헤드라인 <span class="num">숫자</span> <span class="arrow">-&gt;</span> <span class="num">숫자</span></div>
+  <div class="sub">한 줄로 무엇을 했는지<br>두 줄까지만</div>
+
+  <div class="rows">
+    <div class="row warn">
+      <div class="row-top"><span class="row-count">2개</span><span class="row-title">실패한 것</span></div>
+      <div class="row-desc">왜 안 됐는지 한 줄<br>근거가 되는 사실 한 줄</div>
+    </div>
+    <div class="row">
+      <div class="row-top"><span class="row-count">5개</span><span class="row-title">두 번째 묶음</span></div>
+      <div class="row-desc">숫자로 말한다</div>
+    </div>
+    <div class="row">
+      <div class="row-top"><span class="row-count">4개</span><span class="row-title">세 번째 묶음</span></div>
+      <div class="row-desc">숫자로 말한다</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="keep">결론 앞부분<br><b>결론 강조 부분</b></div>
+    <!-- 아래 브랜드 바는 값을 바꾸지 않는다 -->
+    <div class="brand">
+      <img class="brand-mark" src="BRAND_MARK_ABSOLUTE_PATH.png" alt="">
+      <div class="brand-text">
+        <div class="brand-name">BRAND_NAME</div>
+        <div class="brand-sub">BRAND_TAGLINE</div>
+      </div>
+      <div class="brand-link">
+        <div class="handle">BRAND_HANDLE</div>
+        <div class="site">BRAND_LINK</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

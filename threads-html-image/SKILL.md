@@ -1,0 +1,98 @@
+---
+name: threads-html-image
+description: "Threads(스레드)에 올릴 이미지를 HTML/CSS로 만들고 브라우저로 렌더해 PNG로 뽑는다. 'html로 이미지', '이미지html', 'HTML 카드', 'PNG로 뽑아줘', '카드뉴스', '타임라인 이미지', '표를 이미지로', '스크린샷 합쳐줘', '렌더해줘' 같은 요청이면 이 스킬을 쓸 것. 한국어 글자·숫자·표·타임라인이 들어가는 이미지는 이미지 생성 모델로 만들지 않는다. 렌더 명령, 실패 원인, 첨부 전 검증까지 실측으로 정리해 두었다. 브랜드 바와 색·크기 규격은 `threads-brand-card` 스킬이 출처이므로 카드 이미지를 만들 때는 그것과 함께 쓴다."
+---
+
+# Threads HTML 이미지 렌더
+
+한국어 글자가 들어간 이미지는 HTML로 만들고 실제 브라우저로 렌더한다. 이미지 생성 모델은 한글 글자를 뭉개고 같은 입력에 같은 결과를 주지 않는다. 숫자가 하나라도 틀리면 글의 신뢰가 같이 무너지므로, 재현되는 경로를 쓴다.
+
+산출물은 HTML 하나와 그 옆의 PNG 하나다. **렌더만 하고 끝내지 않는다. 눈으로 본 PNG가 결과물이다.**
+
+---
+
+## 렌더
+
+렌더 스크립트는 이 저장소의 `threads-brand-card/scripts/render_brand_card.py` 하나를 공용으로 쓴다. 카드가 아닌 이미지에도 그대로 쓴다.
+
+```bash
+python3 ../threads-brand-card/scripts/render_brand_card.py card.html card.png --width 1080 --height 1440
+```
+
+headless Chrome을 직접 부르고, 끝나면 PNG 크기를 검사해 기대값과 다르면 실패로 끝낸다. 크기 검사가 통과하지 않으면 PNG를 결과물로 쓰지 않는다.
+
+### 렌더가 안 끝나고 매달릴 때
+
+headless Chrome은 스크린샷을 다 찍고도 프로세스가 남는 경우가 있다(2026-08-01 실측: PNG는 정상 생성됐는데 45초 이상 종료되지 않음). 그래서 스크립트에 `--timeout`이 있고 기본 60초다. 타임아웃이 걸려도 PNG가 정상 크기면 성공으로 처리한다.
+
+직접 명령을 짤 때는 `--no-first-run`, `--no-default-browser-check`, `--disable-dev-shm-usage`를 같이 넣는다. 첫 실행 안내나 기본 브라우저 확인 창이 렌더를 붙잡는다.
+
+---
+
+## 크기는 같이 올리는 사진이 정한다
+
+Threads는 한 칸에 여러 장을 올리면 비율이 다른 쪽을 잘라낸다. 카드만 올리면 `1080x1350`, 실사진과 같이 올리면 **사진 비율에 맞춘다.**
+
+아이폰·갤럭시 세로 사진은 3:4이므로 `1080x1440`이다. 단 사진 비율은 EXIF 회전을 반영해서 재야 한다. `sips`의 `pixelWidth/pixelHeight`는 회전 전 값을 주므로 세로 사진이 가로로 보인다:
+
+```bash
+# sips: 4000x3000 (가로로 보인다)
+# 실제:  3000x4000 (EXIF 회전 6)
+python3 -c "
+from PIL import Image, ImageOps
+im = ImageOps.exif_transpose(Image.open('photo.jpeg'))
+print(im.size)"
+```
+
+사진도 같은 픽셀 크기로 맞춰 저장하면 두 장이 나란히 잘리지 않는다:
+
+```bash
+python3 -c "
+from PIL import Image, ImageOps
+im = ImageOps.exif_transpose(Image.open('src.jpeg')).resize((1080, 1440), Image.LANCZOS)
+im.save('out.png')"
+```
+
+---
+
+## HTML 작성 규칙
+
+- CSS는 전부 HTML 안에 인라인으로 둔다. 외부 파일·네트워크 폰트를 쓰지 않는다.
+- 폰트는 시스템 한국어 스택: `-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif`.
+- `body`에 고정 픽셀 `width`/`height`를 준다. 고정 크기 export에서 `vw`·`vh`를 쓰면 렌더 크기에 따라 글자가 흔들린다.
+- 한국어는 `letter-spacing: 0`.
+- 로컬 이미지를 넣을 때는 절대 경로를 쓴다.
+- 화살표는 `->`로 쓴다. 유니코드 화살표는 폰트에 따라 자리가 밀린다.
+- 이모지를 넣지 않는다.
+
+---
+
+## 렌더 후 검증 (이게 본 작업이다)
+
+PNG를 열어서 다음을 찾는다. 하나라도 걸리면 HTML을 고쳐 다시 렌더한다.
+
+- [ ] 한국어 글자가 잘리지 않았는가 (특히 마지막 줄, 긴 단어)
+- [ ] 패널이 겹치지 않았는가
+- [ ] 하단 문구가 본문 패널에 눌리지 않았는가
+- [ ] 대비가 충분한가 (흐린 회색 글자를 어두운 배경에 얹지 않았는가)
+- [ ] 줄바꿈이 어색한 자리에서 일어나지 않았는가
+- [ ] PNG 크기가 의도한 값과 정확히 같은가
+
+렌더 로그의 `mean_rgb`가 극단값이면(거의 0이거나 255) 내용이 비었거나 배경만 찍힌 것이다. 크기만 맞는다고 성공이 아니다.
+
+---
+
+## 첨부까지 이어질 때
+
+- 사진 첨부는 파일 업로드가 아니라 **클립보드가 유일한 경로**다. `osascript`로 올리고 `Cmd+V`. 상세는 `threads-web-publish` 스킬.
+- webp는 Threads가 받지 않는다. PNG로 뽑는다.
+- 카드는 글자가 정보이므로 alt에 **이미지 안의 글자를 그대로 옮긴다**(`alt-text-generator` 스킬).
+- 카드가 본문을 그대로 반복하면 스크린리더 사용자가 같은 말을 두 번 듣는다. 카드는 본문이 말하지 않는 수치를 맡는다.
+
+---
+
+## 이 스킬을 쓰지 않는 경우
+
+- 글자가 없는 순수 사진 편집·리사이즈
+- 남의 화면을 그대로 보여주는 스크린샷 (가공하면 출처가 흐려진다)
+- Threads가 아닌 채널의 이미지 (화면 폭과 크롭 규칙이 다르다)

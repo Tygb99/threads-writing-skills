@@ -1,2 +1,6 @@
 __pycache__/
 .DS_Store
+
+brand.local.md
+*.local.html
+*.local.png

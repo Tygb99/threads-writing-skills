@@ -4,7 +4,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS=(threads-linebreak threads-web-publish alt-text-generator)
+SKILLS=(threads-linebreak threads-web-publish alt-text-generator threads-brand-card threads-html-image)
 
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 CODEX_AGENTS_FILE="${CODEX_AGENTS_FILE:-$HOME/.codex/AGENTS.md}"
@@ -40,6 +40,8 @@ if [ -d "$(dirname "$CODEX_AGENTS_FILE")" ]; then
       printf '# SKILL: Threads(스레드) 글의 줄바꿈·문단을 다듬거나 검사할 때는 `%s/threads-linebreak/SKILL.md`를 먼저 읽고 그 규칙을 따르세요.\n' "$REPO_DIR"
       printf '# SKILL: Threads 웹을 브라우저 자동화로 조작해 글을 올리거나 예약·수정할 때는 `%s/threads-web-publish/SKILL.md`를 먼저 읽고 그 절차를 따르세요.\n' "$REPO_DIR"
       printf '# SKILL: 이미지의 한국어 대체 텍스트(alt text)를 만들 때는 `%s/alt-text-generator/SKILL.md`를 먼저 읽고 그 형식을 따르세요.\n' "$REPO_DIR"
+      printf '# SKILL: Threads에 올릴 카드 이미지를 만들 때는 `%s/threads-brand-card/SKILL.md`를 먼저 읽고 브랜드·크기 규칙을 따르세요.\n' "$REPO_DIR"
+      printf '# SKILL: Threads용 이미지를 HTML/CSS로 만들어 PNG로 렌더할 때는 `%s/threads-html-image/SKILL.md`를 먼저 읽고 그 절차를 따르세요.\n' "$REPO_DIR"
     } >> "$CODEX_AGENTS_FILE"
     echo "  등록됨: $CODEX_AGENTS_FILE"
   fi
