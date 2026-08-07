@@ -146,6 +146,29 @@ osascript -e 'set the clipboard to (read (POSIX file "/절대/경로/파일.png"
 - **webp는 Threads가 안 받는다.** `sips -s format png 원본.webp --out 결과.png`로 변환한다.
 - 폰 스크린샷은 맥에 파일이 없다. 메신저로 옮기면 확장자가 `.webp`로 오는 경우가 많다.
 
+### 사진(실사)은 JPEG로 줄여서 붙인다 (2026-08-07, claude-in-chrome)
+
+클립보드는 PNG만 받는 게 아니다. **JPEG도 된다:**
+
+```bash
+osascript -e 'set the clipboard to (read (POSIX file "/절대/경로/사진.jpg") as JPEG picture)'
+```
+
+이걸로 사진 3장을 붙여 예약까지 정상 발행 확인했다(2026-08-07 전동휠체어 사고 글).
+
+쓰는 이유는 용량이다. **실사 사진을 PNG로 바꾸면 용량이 몇 배로 뛴다** — 같은 3장이 PNG 1500×2000에서 합계 14.4MB(1200×1600으로 줄여도 9.7MB)인데, JPEG 1500×2000 품질 88은 **합계 2.5MB**였다. 업로드 실패 사례(합계 12.2MB, §3 위)를 PNG 사진으로는 몇 장 만에 다시 밟는다.
+
+- 실사 사진: **JPEG 유지, 긴 변 2000px 이내, 품질 85~90.**
+- 스크린샷·글자/선 그래픽: PNG 유지(잘 압축되고 글자가 또렷하다).
+- EXIF orientation은 픽셀에 굽고 저장한다. PIL은 저장 시 EXIF를 안 쓰므로 이중 회전(§3 아래)이 안 생긴다:
+
+```python
+from PIL import Image, ImageOps
+im = ImageOps.exif_transpose(Image.open(src))   # 회전을 픽셀에 반영
+im.thumbnail((1500, 2000))                       # 긴 변 2000px 이내
+im.save(dst, "JPEG", quality=88)
+```
+
 ### 게시가 통째로 실패할 때 — `게시물을 업로드하지 못했습니다` (2026-08-01, claude-in-chrome)
 
 `게시`를 누르면 `게시 중...`이 떴다가 **`게시물을 업로드하지 못했습니다`** 토스트로 끝나고 작성창이 닫히는 경우가 있다. 실제로 겪은 조건은 사진 2장 합계 약 12.2MB(1672×2090 PNG 2.3MB + 3200×4000 PNG 9.9MB)였고, 같은 문안 그대로 **1600×2000으로 줄여 1.9MB + 2.6MB로 다시 붙이니 한 번에 올라갔다.**
