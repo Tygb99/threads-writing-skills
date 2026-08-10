@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; letter-spacing: 0; }
+  body {
+    width: 1080px; height: 1440px;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: linear-gradient(160deg, #1a1033 0%, #10142e 55%, #0b1b2e 100%);
+    color: #eef0ff;
+    padding: 78px 72px 62px;
+    display: flex; flex-direction: column;
+  }
+  .eyebrow { font-size: 30px; color: #8f8ab8; font-weight: 700; }
+  .headline { margin-top: 22px; font-size: 92px; font-weight: 800; line-height: 1.22; }
+  .headline .num {
+    background: linear-gradient(90deg, #4de3ff, #b478ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .headline .arrow { color: #56517e; font-weight: 700; }
+  .sub { margin-top: 22px; font-size: 33px; line-height: 1.5; color: #a9a6cf; }
+  .rows { margin-top: 50px; display: flex; flex-direction: column; gap: 22px; }
+  .row {
+    background: rgba(255,255,255,0.05); border-radius: 22px; padding: 30px 34px;
+    border: 1px solid rgba(140,130,255,0.25); border-left: 8px solid #4de3ff;
+  }
+  .row.a { border-left-color: #ff5fa2; }
+  .row-top { display: flex; align-items: baseline; gap: 18px; }
+  .row-count { font-size: 52px; font-weight: 800; color: #4de3ff; }
+  .row.a .row-count { color: #ff5fa2; }
+  .row-title { font-size: 36px; font-weight: 700; color: #e7e6ff; }
+  .row-desc { margin-top: 12px; font-size: 29px; line-height: 1.48; color: #9a97c2; }
+  .footer { margin-top: auto; padding-top: 36px; border-top: 2px solid rgba(140,130,255,0.3); }
+  .footer .keep { font-size: 31px; color: #a19dcb; line-height: 1.45; }
+  .footer .keep b { color: #4de3ff; font-weight: 800; }
+  .brand { margin-top: 34px; display: flex; align-items: center; gap: 20px; }
+  .brand-mark { width: 74px; height: 74px; flex: 0 0 74px; border-radius: 50%; object-fit: cover; border: 3px solid #b478ff; }
+  .brand-text { display: flex; flex-direction: column; gap: 5px; }
+  .brand-name { font-size: 32px; font-weight: 800; color: #eef0ff; }
+  .brand-sub { font-size: 25px; color: #8f8ab8; }
+  .brand-link { margin-left: auto; text-align: right; }
+  .brand-link .handle { font-size: 27px; font-weight: 700; color: #b478ff; }
+  .brand-link .site { font-size: 24px; color: #56517e; margin-top: 5px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">AI 스킬 정리 · 2026-08-01</div>
+  <div class="headline">스킬 <span class="num">40개</span> <span class="arrow">-&gt;</span> <span class="num">29개</span></div>
+  <div class="sub">AI에게 준 설명서를 전부 열어보고<br>11개를 아카이브로 옮겼다</div>
+
+  <div class="rows">
+    <div class="row a">
+      <div class="row-top"><span class="row-count">2개</span><span class="row-title">실행 자체가 불가능</span></div>
+      <div class="row-desc">코드가 /opt/.manus 경로를 부르는데<br>내 맥에는 그 폴더가 없다</div>
+    </div>
+    <div class="row">
+      <div class="row-top"><span class="row-count">5개</span><span class="row-title">모델이 이미 아는 교과서</span></div>
+      <div class="row-desc">JWT 647줄 · 청구 566줄 · PayPal 478줄<br>postgresql 참고문서만 3MB</div>
+    </div>
+    <div class="row">
+      <div class="row-top"><span class="row-count">4개</span><span class="row-title">서로 겹치는 중복</span></div>
+      <div class="row-desc">기획 스킬 3개가 같은 말에 동시에 손을 든다</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="keep">지운 건 하나도 없다<br><b>11개는 아카이브, 10개는 링크로 전환</b></div>
+    <div class="brand">
+      <img class="brand-mark" src="BRAND_MARK_ABSOLUTE_PATH.png" alt="">
+      <div class="brand-text">
+        <div class="brand-name">BRAND_NAME</div>
+        <div class="brand-sub">BRAND_TAGLINE</div>
+      </div>
+      <div class="brand-link">
+        <div class="handle">BRAND_HANDLE</div>
+        <div class="site">BRAND_LINK</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

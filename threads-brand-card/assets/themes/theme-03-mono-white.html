@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; letter-spacing: 0; }
+  body {
+    width: 1080px; height: 1440px;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: #ffffff; color: #111111;
+    padding: 82px 76px 62px;
+    display: flex; flex-direction: column;
+  }
+  .eyebrow { font-size: 29px; color: #999999; font-weight: 700; text-transform: uppercase; }
+  .headline { margin-top: 24px; font-size: 98px; font-weight: 900; line-height: 1.18; }
+  .headline .num { border-bottom: 10px solid #e4342b; }
+  .headline .arrow { color: #cccccc; font-weight: 700; }
+  .sub { margin-top: 26px; font-size: 33px; line-height: 1.5; color: #555555; }
+  .rows { margin-top: 54px; display: flex; flex-direction: column; }
+  .row { padding: 30px 4px; border-top: 2px solid #e8e8e8; }
+  .row:last-child { border-bottom: 2px solid #e8e8e8; }
+  .row-top { display: flex; align-items: baseline; gap: 20px; }
+  .row-count { font-size: 54px; font-weight: 900; color: #111111; min-width: 110px; }
+  .row.a .row-count { color: #e4342b; }
+  .row-title { font-size: 37px; font-weight: 800; color: #222222; }
+  .row-desc { margin-top: 10px; margin-left: 130px; font-size: 29px; line-height: 1.48; color: #888888; }
+  .footer { margin-top: auto; padding-top: 36px; }
+  .footer .keep { font-size: 31px; color: #555555; line-height: 1.45; }
+  .footer .keep b { color: #111111; font-weight: 900; border-bottom: 6px solid #e4342b; }
+  .brand { margin-top: 36px; display: flex; align-items: center; gap: 20px; }
+  .brand-mark { width: 74px; height: 74px; flex: 0 0 74px; border-radius: 50%; object-fit: cover; border: 3px solid #111111; }
+  .brand-text { display: flex; flex-direction: column; gap: 5px; }
+  .brand-name { font-size: 32px; font-weight: 800; color: #111111; }
+  .brand-sub { font-size: 25px; color: #999999; }
+  .brand-link { margin-left: auto; text-align: right; }
+  .brand-link .handle { font-size: 27px; font-weight: 800; color: #e4342b; }
+  .brand-link .site { font-size: 24px; color: #bbbbbb; margin-top: 5px; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">AI 스킬 정리 · 2026-08-01</div>
+  <div class="headline">스킬 <span class="num">40개</span> <span class="arrow">-&gt;</span> <span class="num">29개</span></div>
+  <div class="sub">AI에게 준 설명서를 전부 열어보고<br>11개를 아카이브로 옮겼다</div>
+
+  <div class="rows">
+    <div class="row a">
+      <div class="row-top"><span class="row-count">2개</span><span class="row-title">실행 자체가 불가능</span></div>
+      <div class="row-desc">코드가 /opt/.manus 경로를 부르는데<br>내 맥에는 그 폴더가 없다</div>
+    </div>
+    <div class="row">
+      <div class="row-top"><span class="row-count">5개</span><span class="row-title">모델이 이미 아는 교과서</span></div>
+      <div class="row-desc">JWT 647줄 · 청구 566줄 · PayPal 478줄<br>postgresql 참고문서만 3MB</div>
+    </div>
+    <div class="row">
+      <div class="row-top"><span class="row-count">4개</span><span class="row-title">서로 겹치는 중복</span></div>
+      <div class="row-desc">기획 스킬 3개가 같은 말에 동시에 손을 든다</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="keep">지운 건 하나도 없다<br><b>11개는 아카이브, 10개는 링크로 전환</b></div>
+    <div class="brand">
+      <img class="brand-mark" src="BRAND_MARK_ABSOLUTE_PATH.png" alt="">
+      <div class="brand-text">
+        <div class="brand-name">BRAND_NAME</div>
+        <div class="brand-sub">BRAND_TAGLINE</div>
+      </div>
+      <div class="brand-link">
+        <div class="handle">BRAND_HANDLE</div>
+        <div class="site">BRAND_LINK</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
