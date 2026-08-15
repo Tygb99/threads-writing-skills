@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""Threads 첫 문단 검사기.
+"""Threads 첫 문단 검사기 (베타).
 
 첫 문단만 떼어 읽고, 도달과 상관이 확인된 항목을 점검한다.
 판단이 갈리는 항목(주어가 사건인지 작업물인지)은 근거를 보여주고 결정은 사람에게 맡긴다.
+
+베타인 이유: 기준 수치는 실측이지만 **주어 판정이 어휘 휴리스틱이라 틀린다.**
+`업데이트` 같은 낱말 하나로 남이 한 일을 작업물로 오판한 적이 있다(수정함).
+형태 항목(줄 수·미완결·숫자)만 기계를 믿고, 주어는 사람이 정한다.
+라벨 정답셋이 없어 정확도를 재지 못하는 것이 베타를 벗어나지 못하는 이유다.
 
     python3 check_first_paragraph.py draft.txt
     cat draft.txt | python3 check_first_paragraph.py
@@ -107,6 +112,9 @@ def analyze(text):
 
 def report(result):
     out = []
+    out.append("── 첫 문단 검사기 (베타) ──")
+    out.append("주어 판정은 낱말로 어림잡는 것이라 틀린다. 통과를 발행 허가로 읽지 마라.")
+    out.append("")
     out.append("── 첫 문단 ──")
     out.append(result["first_paragraph"])
     out.append("")
