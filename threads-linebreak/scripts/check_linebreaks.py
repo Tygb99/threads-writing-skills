@@ -123,6 +123,14 @@ def analyze(text):
                 "text": lines[tag_lines[0] - 1],
             })
 
+    # 해시태그를 붙였으면 의도인지 물어본다 — 기본은 0개다 (SKILL.md §5.6)
+    if tag_lines:
+        hints.append({
+            "line": tag_lines[0],
+            "detail": "해시태그가 있다. 기본 규칙은 0개다 — 150건 대조에서 조회 중앙 910(있음) vs 902(없음)로 차이가 없었다. 검색 유입을 노린 의도가 아니면 빼라",
+            "text": lines[tag_lines[0] - 1],
+        })
+
     # 판단이 필요한 쉼표 후보
     for idx, line in enumerate(lines, start=1):
         if line.rstrip().endswith(","):
