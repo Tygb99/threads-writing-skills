@@ -243,6 +243,17 @@ osascript -e 'set the clipboard to (read (POSIX file "/절대/경로/파일.png"
 - **webp는 Threads가 안 받는다.** `sips -s format png 원본.webp --out 결과.png`로 변환한다.
 - 폰 스크린샷은 맥에 파일이 없다. 메신저로 옮기면 확장자가 `.webp`로 오는 경우가 많다.
 
+### Aside 샌드박스에서는 클립보드가 막히고, 대신 `setInputFiles`가 통한다 (2026-08-25, Aside repl)
+
+Aside 샌드박스 안에서는 `osascript`가 `can't open default scripting component`로 실패해 **클립보드 경로 자체를 못 쓴다.** 대신 Aside repl은 Playwright라서 **`page.setInputFiles()`로 파일 input에 직접 첨부하는 것이 정상 동작한다** — 2026-08-25 ChatGPT 학생혜택 글 예약에서 PNG 2000×966(1.1MB) 업로드·미리보기·alt 저장까지 확인했다. 같은 날 래피드 판매 파일(ZIP 635KB)도 같은 경로로 2회 업로드돼 **Threads 한정이 아니라 사이트 무관**임을 교차 확인했다.
+
+즉 "파일 업로드 도구는 거부된다"는 **claude-in-chrome의 제약**이지 Threads 웹의 제약이 아니다. 도구별로 경로가 갈린다:
+
+| 도구 | 사진 첨부 경로 |
+|---|---|
+| claude-in-chrome | 클립보드 `osascript` + `Cmd+V` (파일 업로드 도구 거부됨) |
+| Aside repl (Playwright) | `setInputFiles` 직접 첨부 (샌드박스가 `osascript`를 막음) |
+
 ### 사진(실사)은 JPEG로 줄여서 붙인다 (2026-08-07, claude-in-chrome)
 
 클립보드는 PNG만 받는 게 아니다. **JPEG도 된다:**
