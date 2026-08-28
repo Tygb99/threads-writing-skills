@@ -370,6 +370,16 @@ const s = getSelection(); s.removeAllRanges(); s.addRange(r);
 
 **해시태그를 넣으려고 다시 클릭하지 않는다.** 본문 입력 후 재클릭하면 캐럿이 중간으로 튀어 문장 사이에 태그가 박힌다. 본문과 해시태그는 한 번의 `type`으로 이어서 넣는다.
 
+**`게시` 버튼을 텍스트로 찾으면 모달 뒤 피드의 버튼이 먼저 잡힌다** (2026-08-28, Aside repl). 문서 전체에서 `innerText === '게시'`로 찾으면 후보가 **2개** 나온다 — 피드 상단 인라인 작성창의 것(실측 `x=731, y=97`)과 작성 모달의 것(실측 `x=938, y=814`). 앞에 잡히는 것이 **피드 쪽**이고, 그 좌표는 모달이 덮고 있는 영역 안(본문 첫 줄 근처)이라 **누르면 캐럿만 옮기고 조용히 아무 일도 안 일어난다.** 발행된 줄 알고 다음 단계로 넘어가면 사고다.
+
+```javascript
+// 반드시 dialog 스코프로 찾는다
+const dlg = [...document.querySelectorAll('div[role="dialog"]')].find(d => d.innerText.includes('새로운 스레드'));
+const post = [...dlg.querySelectorAll('div[role="button"],button')].find(b => b.innerText.trim() === '게시');
+```
+
+누른 뒤에는 `div[role="dialog"]`가 사라졌는지로 판정한다. 모달이 그대로면 발행된 것이 아니니 재시도해도 안전하고(중복 게시 아님), 모달이 닫혔고 토스트가 떴으면 발행된 것이다.
+
 **DOM 직접 삭제는 쓰지 않는다.** `execCommand('delete')` + TreeWalker/Range 조합은 Lexical 에디터에서 줄 순서를 뒤섞을 수 있다. 링크는 텍스트 노드로 잡히지 않아 TreeWalker 검색 자체가 실패한다. 칸을 비우고 다시 타이핑하는 편이 확실하다.
 
 ### Aside repl로 조작할 때
