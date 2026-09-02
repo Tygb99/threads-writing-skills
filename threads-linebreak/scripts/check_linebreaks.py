@@ -222,7 +222,17 @@ def render(result):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Threads 줄바꿈 패턴 검사기")
+    parser = argparse.ArgumentParser(
+        description="Threads 줄바꿈 패턴 검사기",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "보고 항목:\n"
+            "  위반 — 40자 초과 줄 / 3줄 초과 문단 / 해시태그 위치(마지막 줄이 아닌 곳)\n"
+            "  분포 — 줄 길이 / 문단 길이 / 줄 끝 문자(쉼표·마침표 등)\n"
+            "  판단 보류 — 줄 끝 쉼표는 연결어미인지 나열인지 문맥을 봐야 하므로 후보만 표시한다\n"
+            "종료 코드: 0 = 위반 없음, 1 = 위반 있음 (SKILL.md 참조)"
+        ),
+    )
     parser.add_argument("path", nargs="?", help="검사할 텍스트 파일 (없으면 표준입력)")
     parser.add_argument("--json", action="store_true", help="JSON으로 출력")
     args = parser.parse_args()

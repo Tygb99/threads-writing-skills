@@ -106,7 +106,7 @@ Threads 피드는 모바일 세로 화면에서 스크롤로 소비된다. 한 �
 python3 scripts/check_linebreaks.py draft.txt
 ```
 
-보고 항목과 옵션(`--json` 등)은 `python3 scripts/check_linebreaks.py --help`가 정본이다. 판단이 필요한 쉼표는 사람이 정하라고 후보만 표시한다 — 연결어미인지 나열인지는 문맥을 봐야 알기 때문이다.
+보고 항목(위반 3종·분포 3종·판단 보류)과 옵션(`--json`)은 `python3 scripts/check_linebreaks.py --help`가 정본이다. 판단이 필요한 쉼표는 사람이 정하라고 후보만 표시한다 — 연결어미인지 나열인지는 문맥을 봐야 알기 때문이다.
 
 ---
 
