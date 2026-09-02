@@ -238,7 +238,7 @@ els.indexOf(document.activeElement)     // 넣으려는 칸의 인덱스와 같�
 
 ---
 
-## 3. 사진 첨부 — 클립보드가 유일한 경로
+## 3. 사진 첨부 — 도구별로 경로가 갈린다 (claude-in-chrome은 클립보드, Aside는 `setInputFiles`)
 
 에이전트가 파일 업로드 도구로 직접 올리는 건 거부된다(세션에 공유된 파일만 허용). 프로젝트 폴더도, 스크래치패드도 안 된다. macOS에서는 클립보드로 우회한다:
 
@@ -364,7 +364,6 @@ r.collapse(false);              // 끝으로
 const s = getSelection(); s.removeAllRanges(); s.addRange(r);
 ```
 
-**`cmd+Left`는 문서 처음이 아니라 시각적 줄 처음으로 간다** (2026-08-12). 앞쪽 가드를 지우러 갈 때 `cmd+Left`를 쓰면 줄바꿈된 긴 문단에서는 현재 줄의 시작으로만 이동해 엉뚱한 글자를 지운다. 문서 처음 이동은 `cmd+Up`(또는 `Meta+ArrowUp`) 계열만 쓴다.
 
 **본문 칸이 snapshot에 안 잡히면 스크롤을 의심한다.** 작성창을 열면 스크롤이 아래쪽에 있어 본문 칸이 트리에 안 나오는 경우가 있다. 스크롤 컨테이너(`generic [scrollable]`)의 `scrollTop = 0`으로 올린 뒤 다시 snapshot을 찍으면 모든 칸 ref가 나온다.
 
