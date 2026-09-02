@@ -17,14 +17,14 @@ Both sides are 152 characters. Line breaks don't change length. They change read
 | Skill | What it does |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Shapes line breaks and paragraphs to the measured pattern, and ships a checker that catches violations |
-| [`threads-web-publish`](threads-web-publish/) | The operational procedure for driving Threads on the web with browser automation. `SKILL.md` holds the four hard rules and the pre-publish checklist; situational detail lives in four `references/` documents |
+| [`threads-web-publish`](threads-web-publish/) | The operational procedure for driving Threads on the web with browser automation. `SKILL.md` holds the five hard rules and the pre-publish checklist; situational detail lives in four `references/` documents |
 | [`alt-text-generator`](alt-text-generator/) | Writes Korean alt text for an image — front-loads the key information, transcribes text inside the image, and returns both plain text and an `alt="…"` attribute |
 | [`threads-brand-card`](threads-brand-card/) | Builds card images in the account's brand: fixed brand bar, fixed colors, and a size that matches the photo it ships alongside so Threads does not crop it |
 | [`threads-html-image`](threads-html-image/) | Turns text, metrics, and screenshots into a PNG by writing standalone HTML and rendering it in a real browser — the render command, why headless Chrome hangs, and the post-render visual checklist |
 
 ### `threads-web-publish` reference documents
 
-`SKILL.md` carries only the four rules you apply every time plus the pre-publish checklist. Open the one document that matches the task at hand.
+`SKILL.md` carries only the five rules you apply every time plus the pre-publish checklist. Open the one document that matches the task at hand.
 
 | Document | Covers |
 |---|---|

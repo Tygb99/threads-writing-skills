@@ -15,7 +15,7 @@ Threads(스레드) 글쓰기용 에이전트 스킬 모음. **Claude Code와 Cod
 | 스킬 | 하는 일 |
 |---|---|
 | [`threads-linebreak`](threads-linebreak/) | Threads 글의 줄바꿈·문단을 실측 패턴대로 다듬고, 위반을 검사 스크립트로 잡아낸다 |
-| [`threads-web-publish`](threads-web-publish/) | Threads 웹을 브라우저 자동화로 조작해 올리고 예약·수정하는 절차. 절대 규칙 4개와 발행 전 점검은 `SKILL.md`에, 상황별 상세는 `references/` 4개 문서에 나눠 두었다 |
+| [`threads-web-publish`](threads-web-publish/) | Threads 웹을 브라우저 자동화로 조작해 올리고 예약·수정하는 절차. 절대 규칙 5개와 발행 전 점검은 `SKILL.md`에, 상황별 상세는 `references/` 4개 문서에 나눠 두었다 |
 | [`alt-text-generator`](alt-text-generator/) | 이미지의 한국어 대체 텍스트를 만든다. 핵심 정보를 앞에 두고, 이미지 속 글자는 그대로 옮기고, plain text와 `alt="…"` 두 형태로 준다 |
 | [`threads-brand-card`](threads-brand-card/) | 카드 이미지를 계정 브랜드로 만든다. 브랜드 바와 색을 고정하고, 같이 올리는 사진 비율에 맞춰 크기를 잡아 Threads가 잘라내지 않게 한다 |
 | [`threads-html-image`](threads-html-image/) | 글자·수치·스크린샷을 HTML로 짜고 실제 브라우저로 렌더해 PNG로 뽑는다. 렌더 명령, headless Chrome이 매달리는 원인, 렌더 후 눈으로 볼 점검표를 담는다 |
@@ -24,7 +24,7 @@ Threads(스레드) 글쓰기용 에이전트 스킬 모음. **Claude Code와 Cod
 
 ### `threads-web-publish` 상세 문서
 
-`SKILL.md`는 매번 읽는 절대 규칙 4개와 발행 전 점검만 담는다. 하는 일에 맞는 문서만 열어 본다.
+`SKILL.md`는 매번 읽는 절대 규칙 5개와 발행 전 점검만 담는다. 하는 일에 맞는 문서만 열어 본다.
 
 | 문서 | 다루는 것 |
 |---|---|
