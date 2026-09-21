@@ -32,7 +32,7 @@
 
 → **규칙: 작성창 끝에 남은 개행은 그대로 두고 게시한다.** 문자 단위 대조를 할 때는 발행본과 초안을 비교하기 전에 **초안 쪽이 아니라 작성창 쪽 값을 `rstrip('\n')` 해서** 맞춘다. 작성창 `innerText`가 초안보다 2~3자 길게 나오는 건 정상이다.
 
-측정 방법(재현용): `me/threads?fields=id,shortcode,timestamp,media_type,text,is_quote_post,quoted_post{shortcode}` 로 페이징 수집 후 `text` 끝 문자를 검사한다. 수집 규약은 `scrap/thread-scrapper/AUTOMATION_CONTRACT.md`를 따른다.
+측정 방법(재현용): `me/threads?fields=id,shortcode,timestamp,media_type,text,is_quote_post,quoted_post{shortcode}` 로 페이징 수집 후 `text` 끝 문자를 검사한다. 수집 규약은 `/Volumes/ssd/Codex/thread-scrapper/AUTOMATION_CONTRACT.md`를 따른다.
 
 ### 확장(⤢) 창은 답글을 달 때만 나온다 (2026-08-22, claude-in-chrome)
 
