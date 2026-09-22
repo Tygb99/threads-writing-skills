@@ -86,7 +86,7 @@ cd threads-writing-skills
 ./install.sh
 ```
 
-스크립트는 Aside에 스킬 심링크를 걸고, 개발 중에는 Claude Code와 Codex에도 체크아웃을 가리키는 링크·포인터를 걸 수 있다. 제거는 `./install.sh --uninstall`이다. 인식 확인 전에 Claude Code·Codex·Aside를 새로 시작해야 한다.
+스크립트는 Aside(`~/.aside/u/0/skills/user`)·Claude Code(`~/.claude/skills`)·Codex(`~/.codex/skills`)에 스킬별 심링크를 걸어 체크아웃을 개발 중에 바로 쓸 수 있게 한다. 대상 경로는 `CLAUDE_SKILLS_DIR`, `CODEX_SKILLS_DIR`, `ASIDE_SKILLS_DIR`로 바꿀 수 있다. 제거는 `./install.sh --uninstall`이다. 인식 확인 전에 Claude Code·Codex·Aside를 새로 시작해야 한다.
 
 브라우저 발행은 Aside가 실행 중이고 Threads에 로그인되어 있다는 전제다.
 

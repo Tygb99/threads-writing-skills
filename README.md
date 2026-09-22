@@ -86,7 +86,7 @@ cd threads-writing-skills
 ./install.sh
 ```
 
-The script links skills into Aside, and can also link Claude Code skills and Codex pointer lines while developing from a checkout. Remove them with `./install.sh --uninstall`. Start Claude Code, Codex, and Aside again before checking recognition.
+The script symlinks each skill into Aside (`~/.aside/u/0/skills/user`), Claude Code (`~/.claude/skills`), and Codex (`~/.codex/skills`), so a checkout can be used directly while developing. Override the targets with `CLAUDE_SKILLS_DIR`, `CODEX_SKILLS_DIR`, and `ASIDE_SKILLS_DIR`. Remove them with `./install.sh --uninstall`. Start Claude Code, Codex, and Aside again before checking recognition.
 
 Browser publishing assumes Aside is running and logged in to Threads.
 
