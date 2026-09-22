@@ -28,31 +28,47 @@ def analyze(text):
     paragraph = "\n".join(lines)
     flat = paragraph.replace("\n", "")
     first_line = lines[0].strip()
+    line_count_ok = len(lines) <= MAX_FIRST_PARAGRAPH_LINES
+    opening_ok = not first_line.endswith(SENTENCE_END)
+    has_number = bool(re.search(r"\d", flat))
+    has_quote = bool(re.search(r"[\"'“”‘’]", flat))
     return {
         "first_paragraph": paragraph,
         "first_line": first_line,
         "lines": len(lines),
         "chars": len(flat),
-        "recommended_line_count": len(lines) <= MAX_FIRST_PARAGRAPH_LINES,
-        "recommended_opening": not first_line.endswith(SENTENCE_END),
-        "has_number": bool(re.search(r"\d", flat)),
-        "has_quote": bool(re.search(r"[\"'“”‘’]", flat)),
+        "recommended_line_count": line_count_ok,
+        "recommended_opening": opening_ok,
+        "has_number": has_number,
+        "has_quote": has_quote,
+        "line_count": {
+            "value": f"{len(lines)}줄",
+            "verdict": "권장 범위" if line_count_ok else "3줄 이상 확인",
+        },
+        "opening": {
+            "value": "미완결" if opening_ok else f"완결({first_line[-8:]})",
+            "verdict": "미완결 권장" if opening_ok else "확인",
+        },
+        "number": {
+            "value": "있음" if has_number else "없음",
+            "verdict": "권장 충족" if has_number else "참고",
+        },
+        "quote": {
+            "value": "있음" if has_quote else "없음",
+            "verdict": "확인" if has_quote else "참고",
+        },
     }
 
 
 def report(result):
-    opening = "권장" if result["recommended_opening"] else "확인"
-    count = "권장" if result["recommended_line_count"] else "확인"
-    number = "확인" if result["has_number"] else "권장"
-    quote = "확인" if result["has_quote"] else "권장"
     return "\n".join([
         "── 첫 문단 검사 ──",
         result["first_paragraph"],
         "",
-        f"첫 문단 줄 수: {result['lines']}줄 · {count} (1~2줄)",
-        f"첫 줄 미완결: {opening}",
-        f"숫자 포함: {number}",
-        f"따옴표 포함: {quote}",
+        f"첫 문단 줄 수: {result['line_count']['value']} · {result['line_count']['verdict']}",
+        f"첫 줄 미완결: {result['opening']['value']} · {result['opening']['verdict']}",
+        f"숫자 포함: {result['number']['value']} · {result['number']['verdict']}",
+        f"따옴표 포함: {result['quote']['value']} · {result['quote']['verdict']}",
         "주어는 사람이 정한다",
     ])
 

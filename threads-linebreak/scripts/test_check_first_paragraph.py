@@ -22,6 +22,8 @@ class FirstParagraphTests(unittest.TestCase):
         self.assertTrue(result["recommended_opening"])
         self.assertTrue(result["has_number"])
         self.assertTrue(result["has_quote"])
+        self.assertEqual(result["number"], {"value": "있음", "verdict": "권장 충족"})
+        self.assertEqual(result["quote"], {"value": "있음", "verdict": "확인"})
 
     def test_three_lines_exit_one(self):
         proc = subprocess.run([sys.executable, str(Path(__file__).with_name("check_first_paragraph.py"))], input="a\nb\nc", text=True, capture_output=True)
@@ -33,6 +35,8 @@ class FirstParagraphTests(unittest.TestCase):
         data = json.loads(proc.stdout)
         self.assertNotIn("subject", data)
         self.assertIn("has_quote", data)
+        self.assertIn("value", data["number"])
+        self.assertIn("verdict", data["number"])
 
 
 if __name__ == "__main__":
