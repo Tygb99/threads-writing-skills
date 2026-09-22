@@ -22,7 +22,7 @@ description: "Threads(스레드) 이미지를 HTML/CSS로 만들고 headless Chr
 
 ### 공용 렌더 스크립트
 
-이 저장소의 `threads-brand-card` 스킬 폴더 안 `scripts/render_brand_card.py`를 사용한다.
+이 저장소의 `threads-brand-card/scripts/render_brand_card.py`를 사용한다.
 카드가 아닌 HTML 이미지에도 같은 스크립트를 쓴다.
 아래 `<plugin-root>`는 설치한 저장소의 절대 경로, `<work>`는 사용자 작업 폴더로 바꾼다.
 

@@ -55,6 +55,7 @@ alt 패널과 텍스트 첨부 편집기도 `contenteditable`이다. 칸 번호�
 ## 문자 단위 대조
 
 정본은 게시할 텍스트만 담으며 불필요한 파일 끝 개행 없이 준비한다.
+정본의 길이와 끝 개행은 `python3 -c "t=open('body.txt',encoding='utf-8').read();print(len(t), repr(t[-3:]))"`로 확인한다.
 작성창 값을 읽을 때 `innerText`의 공백·개행을 임의로 치환하지 않는다.
 아래 `bodyEditor1`은 새 snapshot으로 확인한 본문 입력칸 locator다.
 
@@ -101,6 +102,7 @@ python3 <스킬 절대경로>/scripts/compare_text.py <alt 정본.txt> <DOM에�
 현재 작성창 안의 `input[type=file]`을 확인하고 `locator.setInputFiles`로 첨부한다.
 여러 칸에 파일 input이 있으면 칸별 범위를 좁힌다. 파일 목록 순서를 정본의 첨부 순서와 맞춘다.
 썸네일, 이미지 수, `naturalWidth`·`naturalHeight`, 방향을 확인한다.
+첨부 직후 snapshot의 본문 textbox 라벨에 본문이 두 번 붙은 것처럼 보여도 접근성 이름 합성일 뿐이다. `innerText`로 다시 읽어 판단하고 다시 입력하지 않는다.
 예약본을 다시 열면 이미지 주소가 `blob:`에서 CDN 주소로 바뀔 수 있다. 주소 접두사만으로 첨부를 세지 않는다.
 실제 형식·방향·크기 확인을 마친 뒤 alt를 넣는다.
 
@@ -125,8 +127,8 @@ console.log(await video1.evaluate(el => ({
 
 ## alt 저장과 재확인
 
-1. 첨부 하단이 보이도록 스크롤한 뒤 hover하고 `··· → 대체 텍스트 추가`를 연다.
-2. 새 snapshot으로 alt 입력칸을 찾고 클릭한다. `activeElement`의 `aria-placeholder`가 `시각적으로`로 시작하는지 확인한다.
+1. 첨부 하단이 보이도록 스크롤한 뒤 hover하고 첨부 위의 `첨부 파일 옵션` 버튼(`img[aria-label="첨부 파일 옵션"]`, 화면에는 `···`)을 누른다. 메뉴는 `스포일러로 표시 / 사람 태그하기 / 대체 텍스트 추가` 순이며 `대체 텍스트 추가`를 고른다.
+2. alt 대화상자는 새 글 dialog를 대체하는 같은 `role="dialog"`(제목 `대체 텍스트 추가`)로 뜬다. 이때 `contenteditable`은 본문 칸을 포함해 2개가 잡히고 alt 칸은 인덱스 1이다. 새 snapshot으로 alt 입력칸을 찾아 클릭하고 `activeElement`의 `aria-placeholder`가 `시각적으로`로 시작하는지 확인한다.
 3. 해당 첨부의 alt 정본을 입력·문자 대조하고 `완료`를 누른다.
 4. 저장 여부는 라벨로 판단하지 않는다. 메뉴는 저장 후에도 `대체 텍스트 추가`로 표시된다.
 5. 작성창 첨부의 `img.alt`를 직접 읽어 정본과 비교한다. 영상은 `video`의 `aria-label`을 읽는다. DOM 값이 불명확할 때만 새 ref로 입력창을 다시 열어 확인한다.

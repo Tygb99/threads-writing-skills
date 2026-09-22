@@ -74,6 +74,9 @@ REPL 최상위 `const`·`let` 바인딩은 유지된다. 다음 호출은 `threa
 - snapshot에는 화면 밖 요소도 포함된다. ref 클릭이 스크롤을 처리해도 칸 추가가 실패하면 작성창 안에서 스크롤한 뒤 스크린샷으로 버튼 위치를 확인한다.
 - 좌표 클릭이 필요하면 스크린샷 픽셀과 뷰포트 크기의 가로·세로 배율을 각각 계산한다. 같은 좌표라고 가정하지 않는다.
 - 대기는 `sleep(ms)`다. `page.waitForTimeout`은 쓰지 않는다. 화면 전환이 확인된 경우나 영상 처리 폴링에만 기다린다. DM 입력 준비의 1초 대기는 DM 절차를 따른다.
+- `locator.screenshot()`은 `Invalid parameters`로 실패할 수 있다. 증빙과 위치 확인은 `page.screenshot()` 전체 캡처를 기본으로 쓰고, 필요하면 `scrollIntoViewIfNeeded()` 뒤에 찍는다.
+- REPL locator는 Playwright 전체 API가 아니다. `getByRole()` 같은 메서드가 `not a function`이면 snapshot ref로 요소를 잡고 `evaluate(el => el.closest('[role="dialog"]'))`로 범위를 검증한다.
+- 사진 첨부 직후 snapshot의 textbox 라벨에 본문이 두 번 이어 붙은 것처럼 보일 수 있다. 접근성 이름 합성 문제이므로 `innerText`로 다시 읽어 판단한다.
 - `allInnerTexts()`가 지원되지 않으면 `count()`와 `nth(i).innerText()`로 읽는다. 읽기 메서드 오류를 첨부 실패로 해석해 재업로드하지 않는다.
 - 작업 중 새로고침하지 않는다. 팝업의 X를 사용하고 작성 취소 확인창은 `취소`로 닫는다.
 
