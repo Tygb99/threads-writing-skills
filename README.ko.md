@@ -1,76 +1,72 @@
 # threads-writing-skills
 
-Threads(스레드) 글쓰기용 에이전트 스킬 모음. **Claude Code와 Codex 양쪽에서 같은 파일로 동작한다.**
-
-규칙은 감이 아니라 실측이다. [@yong_____jjang](https://www.threads.com/@yong_____jjang) 계정의 공식 Threads API 리포트 4개월치(2026-04~07)에서 본문 캡션과 자답글 **397건**을 뽑아 줄 단위로 집계했다.
+Threads 공식 API 리포트 4개월치에서 캡션과 자답글 397건을 측정해 만든 한국어 글쓰기 스킬 모음이다. Claude Code·Codex 플러그인으로 배포하며 Aside용 설치 스크립트도 제공한다.
 
 ![같은 글, 줄바꿈만 다르다](assets/before-after.png)
 
-같은 152자다. 줄바꿈은 글자 수를 바꾸지 않는다. 바꾸는 건 읽는 속도다.
+## 스킬
 
----
-
-## 들어 있는 스킬
-
-| 스킬 | 하는 일 |
+| 스킬 | 설명 |
 |---|---|
-| [`threads-linebreak`](threads-linebreak/) | Threads 글의 줄바꿈·문단을 실측 패턴대로 다듬고, 위반을 검사 스크립트로 잡아낸다 |
-| [`threads-web-publish`](threads-web-publish/) | Threads 웹을 브라우저 자동화로 조작해 올리고 예약·수정하는 절차. 절대 규칙 5개와 발행 전 점검은 `SKILL.md`에, 상황별 상세는 `references/` 4개 문서에 나눠 두었다 |
-| [`alt-text-generator`](alt-text-generator/) | 이미지의 한국어 대체 텍스트를 만든다. 핵심 정보를 앞에 두고, 이미지 속 글자는 그대로 옮기고, plain text와 `alt="…"` 두 형태로 준다 |
-| [`threads-brand-card`](threads-brand-card/) | 카드 이미지를 계정 브랜드로 만든다. 브랜드 바와 색을 고정하고, 같이 올리는 사진 비율에 맞춰 크기를 잡아 Threads가 잘라내지 않게 한다 |
-| [`threads-html-image`](threads-html-image/) | 글자·수치·스크린샷을 HTML로 짜고 실제 브라우저로 렌더해 PNG로 뽑는다. 렌더 명령, headless Chrome이 매달리는 원인, 렌더 후 눈으로 볼 점검표를 담는다 |
+| [`threads-linebreak`](skills/threads-linebreak/) | 한국어 Threads 줄바꿈을 다듬고 초안을 검사한다 |
+| [`threads-web-publish`](skills/threads-web-publish/) | Aside로 Threads 글을 발행·예약·수정·복구한다 |
+| [`alt-text-generator`](skills/alt-text-generator/) | 한국어 alt를 짧게 만들고 plain text와 HTML로 출력한다 |
+| [`threads-brand-card`](skills/threads-brand-card/) | 재현 가능한 HTML·CSS로 브랜드 카드를 만든다 |
+| [`threads-html-image`](skills/threads-html-image/) | 글자·수치·스크린샷을 PNG로 렌더한다 |
 
-`alt-text-generator`는 Threads 전용이 아니다. 블로그·웹사이트 이미지에도 그대로 쓴다. 용도(웹 접근성/SNS/블로그)에 따라 톤과 길이를 다르게 잡는다.
+### `threads-web-publish` 참고 문서
 
-### `threads-web-publish` 상세 문서
-
-`SKILL.md`는 매번 읽는 절대 규칙 5개와 발행 전 점검만 담는다. 하는 일에 맞는 문서만 열어 본다.
-
-| 문서 | 다루는 것 |
+| 문서 | 설명 |
 |---|---|
-| `references/composing.md` | 본문·자답글 입력, 사진 첨부, alt 텍스트, 캐럿·스크롤 함정 |
-| `references/scheduling.md` | 예약 발행, 예약 글 다시 찾기, 인용카드, API 예약 불가 |
-| `references/recovery.md` | 잘못 올린 글 수정, 답글 고정, 되돌릴 수 없는 클릭 |
-| `references/dm-source.md` | DM 대화를 글 소재로 정리 (발화자·입력 경로 분류) |
-
----
+| `composing.md` | 글·답글·미디어 첨부 작성 |
+| `scheduling.md` | 글 예약과 예약 초안 찾기 |
+| `recovery.md` | 발행 글 수정과 실수 복구 |
+| `dm-source.md` | DM 대화를 발화자와 함께 글 소재로 정리 |
 
 ## 규칙 요약
 
-> **연결어미 뒤 쉼표에서 줄바꿈 1번.**
-> **문단이 끝나면 줄바꿈 2번(빈 줄 1개).**
+- 한 줄 목표는 25자, 상한은 40자다
+- 문단은 4줄 이하로 유지한다
+- 절을 끝내는 쉼표에서 줄을 바꾸고, 나열·숫자 쉼표는 붙여 둔다
+- 문장 끝 마침표는 생략하고 URL·수치·버전·파일명의 점은 보존한다
+- 해시태그는 기본 0개다
 
-- 모든 쉼표에서 바꾸지 않는다 — 줄 끝에 오는 쉼표는 실측 **44%**뿐이다. 나머지는 숫자·나열이라 그대로 둔다
-- 줄 길이 평균 **25자**, **40자 이하가 86%**
-- 과거 문단은 **1~2줄이 76%**. 현재는 4줄까지 허용하고 5줄 이상이면 쪼갤 자리를 찾는다
-- **새 게시 텍스트의 문장 끝 마침표는 생략한다**. URL·수치·버전·파일명 안의 점은 보존한다
-
-자세한 근거와 예시는 [`threads-linebreak/SKILL.md`](threads-linebreak/SKILL.md)에 있다.
-
----
-
-## 검사 스크립트
+## 검사기
 
 ```bash
-python3 threads-linebreak/scripts/check_linebreaks.py draft.txt
+python3 skills/threads-linebreak/scripts/check_linebreaks.py draft.txt
 ```
 
-의존성 없다(Python 3.8+). 규칙 위반은 `고칠 것`으로, 판단이 필요한 쉼표는 `확인해볼 것`으로 나눠 보고한다 — 절 경계인지 나열인지는 문맥을 봐야 아는 일이라 결정은 사람에게 남긴다.
+출력 예:
 
 ```
 ── 분포 ──
 문단 5개 · 줄 8개 · 본문 153자(줄바꿈 제외)
-줄 길이 평균 19.1자 · 40자 이하 100% (실측 기준 86%)
-문단 1~2줄 비율 100% (실측 기준 76%) · 구성 [2, 2, 2, 1, 1]
-
+줄 길이 평균 19.1자 · 40자 이하 100%
 ── 고칠 것 없음 ──
 ```
 
-`--json`을 붙이면 기계가 읽는 형식으로 나온다. 위반이 있으면 종료 코드 1을 반환하므로 CI나 발행 전 훅에 걸 수 있다.
-
----
+기계 처리 형식은 `--json`을 붙인다. Python 3.8+ 표준 라이브러리만 사용하며 위반이 있으면 종료 코드 1을 반환한다.
 
 ## 설치
+
+### Claude Code 플러그인
+
+```text
+/plugin marketplace add Tygb99/threads-writing-skills
+/plugin install threads-writing-skills@threads-writing-skills
+/reload-plugins
+```
+
+필요하면 `/reload-plugins` 대신 재시작하고 `claude plugin list`로 확인한다. 스킬 호출명에는 네임스페이스가 붙어 `/threads-writing-skills:threads-linebreak`처럼 쓴다.
+
+### Codex 플러그인
+
+`codex plugin marketplace --help`와 `codex plugin add --help`를 실행해 설치된 Codex 버전의 실제 플러그인 명령을 확인한 뒤 이 저장소를 플러그인으로 설치한다. 명령을 사용할 수 없으면 `codex plugin --help`를 참조한다.
+
+### Aside와 수동 체크아웃 설치
+
+Aside에는 플러그인 시스템이 없다. 저장소를 복제하고 실행한다:
 
 ```bash
 git clone https://github.com/Tygb99/threads-writing-skills.git
@@ -78,17 +74,10 @@ cd threads-writing-skills
 ./install.sh
 ```
 
-`install.sh`는 저장소를 지우지 않고 **심볼릭 링크만** 건다:
+스크립트는 Aside에 스킬 심링크를 걸고, 개발 중에는 Claude Code와 Codex에도 체크아웃을 가리키는 링크·포인터를 걸 수 있다. 제거는 `./install.sh --uninstall`이다. 인식 확인 전에 Claude Code·Codex·Aside를 새로 시작해야 한다.
 
-- **Claude Code** → `~/.claude/skills/<스킬이름>`
-- **Codex** → `~/.codex/AGENTS.md`에 스킬 경로 추가
-
-이후 `git pull` 한 번이면 양쪽 다 갱신된다.
-
-수동으로 하려면 스킬 폴더를 각 도구가 읽는 위치에 복사하거나 링크하면 된다. `SKILL.md` 형식(YAML frontmatter + 마크다운)은 두 도구가 동일하게 쓴다.
-
----
+브라우저 발행은 Aside가 실행 중이고 Threads에 로그인되어 있다는 전제다.
 
 ## 라이선스
 
-MIT. 자기 계정 데이터로 숫자를 다시 뽑아 쓰는 것을 권한다 — 이 수치는 한 계정의 글 397건에서 나온 것이라, 문체가 다르면 분포도 다르다.
+MIT.
