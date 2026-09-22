@@ -400,6 +400,7 @@ const post = [...dlg.querySelectorAll('div[role="button"],button')].find(b => b.
 
 ### Aside repl로 조작할 때
 
+- **`allInnerTexts()`가 `TypeError: not a function`이면 `count()`와 `nth(i).innerText()`로 개별 조회한다** (2026-09-13 실측). 사진 업로드 직후 이 검사 호출이 실패했지만 사진 3장은 작성창에 이미 있었다. 검사 메서드 오류를 첨부 실패로 읽고 다시 업로드하지 말고, snapshot과 개별 요소 조회로 상태를 확인한다.
 - `attachBrowserTab`이 `No open browser tab found`로 실패한 이력이 있다. `openTab()`으로 새 탭을 여는 편이 확실했다.
 - `page.evaluate`가 잘못된 프레임을 잡아 `document.querySelectorAll('div[role="dialog"]')`가 0을 반환한 일이 있다. **ref 기반 조작과 `locator.evaluate`를 우선한다.**
 - 확장 작성창은 `role="dialog"`가 아니라 **`role="menu"`**로 잡힌다(2026-07-31 확인). `dialog`로만 찾으면 작성창을 못 찾는다. 확인창은 `dialog`다.

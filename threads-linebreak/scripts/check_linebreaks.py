@@ -16,7 +16,7 @@ import sys
 from collections import Counter
 
 MAX_LINE_CHARS = 40
-MAX_PARAGRAPH_LINES = 3
+MAX_PARAGRAPH_LINES = 4
 
 # 절 경계 신호가 되는 연결어미. 이걸로 끝나는 쉼표는 줄바꿈 자리다.
 # 실측 상위(-는데, -하고, -지만, -는지 …)를 포함하도록 어미 형태로 일반화했다.
@@ -91,8 +91,8 @@ def analyze(text):
                 "text": para[0],
             })
 
-    # 규칙 위반: 문단이 하나뿐
-    if len(paragraphs) == 1 and len(lines) > 2:
+    # 규칙 위반: 줄 수 제한을 넘긴 단일 문단
+    if len(paragraphs) == 1 and len(lines) > MAX_PARAGRAPH_LINES:
         issues.append({
             "type": "no_paragraph_break",
             "detail": "빈 줄이 하나도 없다. 문단은 빈 줄 1개로 나눈다",
@@ -227,7 +227,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "보고 항목:\n"
-            "  위반 — 40자 초과 줄 / 3줄 초과 문단 / 해시태그 위치(마지막 줄이 아닌 곳)\n"
+            f"  위반 — 40자 초과 줄 / {MAX_PARAGRAPH_LINES}줄 초과 문단 / 해시태그 위치(마지막 줄이 아닌 곳)\n"
             "  분포 — 줄 길이 / 문단 길이 / 줄 끝 문자(쉼표·마침표 등)\n"
             "  판단 보류 — 줄 끝 쉼표는 연결어미인지 나열인지 문맥을 봐야 하므로 후보만 표시한다\n"
             "종료 코드: 0 = 위반 없음, 1 = 위반 있음 또는 입력이 비어 있음"

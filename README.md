@@ -42,8 +42,8 @@ Both sides are 152 characters. Line breaks don't change length. They change read
 
 - Not every comma — only **44%** of commas land at end of line. The rest are numbers and lists; leave them inline
 - Average line is **25 characters**; **86% are 40 or fewer**
-- **76% of paragraphs are 1–2 lines.** Past 3 lines, look for a place to split
-- **Half of all lines end with a period.** Comma breaks are seasoning, not the base
+- **76% of historical paragraphs are 1–2 lines.** The current limit is 4 lines; split paragraphs of 5 or more lines
+- **Omit sentence-ending periods in new posts.** Preserve dots in URLs, numbers, versions, and filenames
 
 Full reasoning and examples live in [`threads-linebreak/SKILL.md`](threads-linebreak/SKILL.md) (written in Korean, since that's the language the pattern describes).
 
