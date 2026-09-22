@@ -1,8 +1,10 @@
 # threads-writing-skills
 
-Measured Korean writing skills for Threads, based on 397 captions and self-replies from four months of official Threads API reports. The same skills are distributed as Claude Code and Codex plugins, with an install script for Aside.
+Measured Korean writing skills for Threads, based on 397 captions and self-replies from four months of official Threads API reports. The rules are measured rather than guessed: 397 posts were counted line by line. The same skills are distributed as Claude Code and Codex plugins, with an install script for Aside.
 
 ![Same post, different line breaks](assets/before-after.png)
+
+Both sides are 152 characters; line breaks change reading speed, not length.
 
 ## Skills
 
@@ -62,7 +64,13 @@ Restart instead of `/reload-plugins` when needed, then verify with `claude plugi
 
 ### Codex plugin
 
-Run `codex plugin marketplace --help` and `codex plugin add --help` to confirm the installed Codex version's plugin commands, then install this repository as a plugin. If those commands are unavailable, see `codex plugin --help`.
+```bash
+codex plugin marketplace add Tygb99/threads-writing-skills
+codex plugin add threads-writing-skills@threads-writing-skills
+codex plugin list
+```
+
+Remove with `codex plugin remove` and `codex plugin marketplace remove` (check each command's `--help` for the required argument). Codex reads `.claude-plugin/marketplace.json` as the marketplace catalog and `.codex-plugin/plugin.json` as the plugin manifest.
 
 ### Aside and manual checkout install
 

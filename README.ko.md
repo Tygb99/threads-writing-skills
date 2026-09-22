@@ -1,8 +1,10 @@
 # threads-writing-skills
 
-Threads 공식 API 리포트 4개월치에서 캡션과 자답글 397건을 측정해 만든 한국어 글쓰기 스킬 모음이다. Claude Code·Codex 플러그인으로 배포하며 Aside용 설치 스크립트도 제공한다.
+규칙은 감이 아니라 측정값이다. Threads 공식 API 리포트 4개월치에서 캡션과 자답글 397건을 줄 단위로 집계해 만든 한국어 글쓰기 스킬 모음이다. Claude Code·Codex 플러그인으로 배포하며 Aside용 설치 스크립트도 제공한다.
 
 ![같은 글, 줄바꿈만 다르다](assets/before-after.png)
+
+양쪽 다 152자이며, 줄바꿈은 길이가 아니라 읽는 속도를 바꾼다.
 
 ## 스킬
 
@@ -62,7 +64,13 @@ python3 skills/threads-linebreak/scripts/check_linebreaks.py draft.txt
 
 ### Codex 플러그인
 
-`codex plugin marketplace --help`와 `codex plugin add --help`를 실행해 설치된 Codex 버전의 실제 플러그인 명령을 확인한 뒤 이 저장소를 플러그인으로 설치한다. 명령을 사용할 수 없으면 `codex plugin --help`를 참조한다.
+```bash
+codex plugin marketplace add Tygb99/threads-writing-skills
+codex plugin add threads-writing-skills@threads-writing-skills
+codex plugin list
+```
+
+제거는 `codex plugin remove`와 `codex plugin marketplace remove`를 사용한다(필요한 인자는 각 명령의 `--help`로 확인한다). Codex는 마켓플레이스 카탈로그로 `.claude-plugin/marketplace.json`을 읽고 플러그인 매니페스트로 `.codex-plugin/plugin.json`을 읽는다.
 
 ### Aside와 수동 체크아웃 설치
 

@@ -8,6 +8,16 @@ ASIDE_SKILLS_DIR="${ASIDE_SKILLS_DIR:-$HOME/.aside/u/0/skills/user}"
 START='<!-- threads-writing-skills -->'
 END='<!-- /threads-writing-skills -->'
 SKILLS="$(find "$REPO_DIR/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print | while IFS= read -r f; do basename "$(dirname "$f")"; done | LC_ALL=C sort)"
+description_for() {
+  case "$1" in
+    threads-linebreak) echo 'Threads(스레드) 글의 줄바꿈·문단을 다듬거나 검사할 때' ;;
+    threads-web-publish) echo 'Threads 웹을 Aside 브라우저 자동화로 조작해 글을 올리거나 예약·수정할 때' ;;
+    alt-text-generator) echo '이미지의 한국어 대체 텍스트(alt)를 만들 때' ;;
+    threads-brand-card) echo 'Threads에 올릴 브랜드 카드 이미지를 만들 때' ;;
+    threads-html-image) echo 'Threads용 이미지를 HTML/CSS로 만들어 PNG로 렌더할 때' ;;
+    *) echo '' ;;
+  esac
+}
 
 usage() { echo "Usage: $0 [--uninstall]"; echo "Discovers skills/*/SKILL.md at depth 2, sorted by name."; }
 link_skills() {
@@ -22,7 +32,14 @@ link_skills() {
 }
 pointer_block() {
   printf '%s\n' "$START"
-  for skill in $SKILLS; do printf '# SKILL: %s/skills/%s/SKILL.md\n' "$REPO_DIR" "$skill"; done
+  for skill in $SKILLS; do
+    description="$(description_for "$skill")"
+    if [ -n "$description" ]; then
+      printf '# SKILL: %s에는 `%s/skills/%s/SKILL.md`를 먼저 읽고 따르세요.\n' "$description" "$REPO_DIR" "$skill"
+    else
+      printf '# SKILL: `%s/skills/%s/SKILL.md`\n' "$REPO_DIR" "$skill"
+    fi
+  done
   printf '%s\n' "$END"
 }
 update_agents() {
