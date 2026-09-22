@@ -102,7 +102,21 @@ python3 scripts/check_first_paragraph.py draft.txt --json
 
 줄바꿈 검사기는 40자 초과, 4줄 초과 문단, 해시태그 위치를 위반으로 보고한다. 줄 길이·문단 길이·줄 끝 분포와 쉼표 판단 보류 후보도 표시한다. 위반 없음은 exit 0, 위반 또는 빈 입력은 exit 1이다.
 
-첫 문단 검사기는 줄 수, 첫 줄 미완결, 숫자, 따옴표의 형태만 표시한다. 첫 문단 3줄 이상만 exit 1이다. 주어의 사건형·작업물형 판정은 하지 않는다.
+첫 문단 검사기는 줄 수, 첫 줄 미완결, 숫자, 따옴표의 형태만 표시한다. 첫 문단 3줄 이상만 exit 1이다. 주어의 사건형·작업물판정은 기본으로 하지 않는다.
+
+### Jev 판정 (실험, `--jev`)
+
+두 검사기에 `--jev`를 주면 사람에게 넘기던 판정을 Jev(TypeSafe System One 모델, Vercel AI Gateway `typesafe-ai/jev`)에게 먼저 묻는다. 환경변수 `AI_GATEWAY_API_KEY`가 필요하며 없으면 exit 2다. 판정 실패 시에는 규칙 휴리스틱으로 대체하고 stderr에 이유를 남긴다.
+
+```bash
+AI_GATEWAY_API_KEY=... python3 scripts/check_linebreaks.py draft.txt --jev
+AI_GATEWAY_API_KEY=... python3 scripts/check_first_paragraph.py draft.txt --jev
+```
+
+- 줄바꿈 검사기: 모든 쉼표를 절 경계/나열로 판정해 실제 줄 위치와 어긋나는 것만 confidence 순으로 보여준다. 모델에는 줄바꿈을 지운 문단만 보낸다.
+- 첫 문단 검사기: 주어 유형(사건형/작업물형/기타)과 첫 줄 미완결 확률을 덧붙인다.
+- 아카이브 207개 쉼표 실측(2026-09-22): 줄 위치 라벨과 73.7% 일치, confidence 0.7 이상 70%를 추리면 78.5%. 나열은 90% 잡지만 `~했고, ~했고,` 같은 병렬 절은 나열로 보는 경향이 있다. 확신 높은 불일치 대부분은 규칙 이전 글이 나열을 줄 끝에 둔 경우였다.
+- Jev 값은 볼 순서를 정할 뿐이다. 최종 판단과 문자 단위 대조는 여전히 사람이 한다.
 
 ## 완성 예시
 
