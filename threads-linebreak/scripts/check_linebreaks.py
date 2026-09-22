@@ -123,11 +123,11 @@ def analyze(text):
                 "text": lines[tag_lines[0] - 1],
             })
 
-    # 해시태그를 붙였으면 의도인지 물어본다 — 기본은 0개다 (SKILL.md §5.6)
+    # 해시태그는 기본 0개이며, 있으면 위치와 함께 확인한다.
     if tag_lines:
         hints.append({
             "line": tag_lines[0],
-            "detail": "해시태그가 있다. 기본 규칙은 0개다 — 150건 대조에서 조회 중앙 910(있음) vs 902(없음)로 차이가 없었다. 검색 유입을 노린 의도가 아니면 빼라",
+            "detail": "해시태그가 있다. 현재 기본 규칙은 0개다. 꼭 필요하면 마지막 단독 문단인지 확인하라",
             "text": lines[tag_lines[0] - 1],
         })
 
@@ -185,14 +185,14 @@ def render(result):
     )
     out.append(
         f"줄 길이 평균 {stats['avg_line_chars']}자 · "
-        f"{MAX_LINE_CHARS}자 이하 {stats['pct_lines_within_limit']}% (실측 기준 86%)"
+        f"{MAX_LINE_CHARS}자 이하 {stats['pct_lines_within_limit']}% (현재 기준)"
     )
     out.append(
-        f"문단 1~2줄 비율 {stats['pct_paragraphs_1_2_lines']}% (실측 기준 76%) · "
+        f"문단 1~2줄 비율 {stats['pct_paragraphs_1_2_lines']}% (권장) · "
         f"구성 {stats['paragraph_line_counts']}"
     )
     out.append(
-        f"줄 끝 쉼표 {stats['pct_lines_ending_comma']}% (실측 기준 9%, 절반 넘으면 과용)"
+        f"줄 끝 쉼표 {stats['pct_lines_ending_comma']}% (절 경계인지 확인)"
     )
     out.append(f"줄 끝 문자 {stats['line_end_chars']}")
 
@@ -227,10 +227,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "보고 항목:\n"
-            f"  위반 — 40자 초과 줄 / {MAX_PARAGRAPH_LINES}줄 초과 문단 / 해시태그 위치(마지막 줄이 아닌 곳)\n"
+            f"  위반 — 40자 초과 줄 / {MAX_PARAGRAPH_LINES}줄 초과 문단 / 해시태그 위치(마지막 단독 문단이 아닌 곳)\n"
             "  분포 — 줄 길이 / 문단 길이 / 줄 끝 문자(쉼표·마침표 등)\n"
             "  판단 보류 — 줄 끝 쉼표는 연결어미인지 나열인지 문맥을 봐야 하므로 후보만 표시한다\n"
-            "종료 코드: 0 = 위반 없음, 1 = 위반 있음 또는 입력이 비어 있음"
+            "  입력 — 파일 인자 하나 또는 표준입력만 읽으며 파일 탐색은 하지 않는다\n"
+            "  종료 코드: 0 = 위반 없음, 1 = 위반 있음 또는 입력이 비어 있음"
         ),
     )
     parser.add_argument("path", nargs="?", help="검사할 텍스트 파일 (없으면 표준입력)")
