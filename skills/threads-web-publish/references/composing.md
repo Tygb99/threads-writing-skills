@@ -146,7 +146,7 @@ console.log(await video1.evaluate(el => ({
 계산은 `len(text.replace('\n', '')) + 2 * text.count('\n')`이며 줄바꿈은 LF로 준비한다.
 한도를 넘기면 입력이 잘리는 대신 `완료`가 비활성이 된다. `textContent.length`만으로 개행 포함 길이를 판단하지 않는다.
 
-1. `svg[aria-label="텍스트 첨부"]`를 가진 버튼을 누른다.
+1. `svg[aria-label="텍스트 첨부"]`를 가진 버튼을 누른다. 도구줄 아이콘에 `aria-label`이 없으면 `svg > title` 텍스트(`텍스트 첨부`)로 찾는다.
 2. `[contenteditable="true"][aria-placeholder="내용을 더 추가해보세요..."]` 편집기를 확인한다.
 3. 정본을 여러 줄 `type`으로 입력하고, 줄·빈 줄을 포함한 전문을 문자 대조한 뒤 `완료`를 누른다.
 
