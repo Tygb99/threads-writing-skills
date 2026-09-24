@@ -69,13 +69,13 @@ REPL 최상위 `const`·`let` 바인딩은 유지된다. 다음 호출은 `threa
 - 읽기는 `snapshot(page, { interactive: true })`부터 시작하고 필요하면 전체 snapshot과 스크린샷으로 확장한다. snapshot 결과는 잘라 읽지 않는다.
 - 액션 뒤 새 snapshot의 `diff`를 확인한다. 새 snapshot을 받으면 이전 ref는 폐기한다. `page.locator('e31')` 같은 ref는 방금 받은 값만 사용하며 DOM 속성으로 취급하지 않는다.
 - ref 클릭을 우선하고 DOM 속성 확인은 해당 locator의 `evaluate`로 한다. 전역 `page.evaluate`가 다른 프레임을 읽으면 작성창이 없다고 오판할 수 있다.
-- 새 글은 `role="dialog"`, 확장 답글 작성창은 `role="menu"`일 수 있다. 대상 작성창의 ref와 범위를 확인한다. 확인 대화상자도 dialog이므로 본문과 혼동하지 않는다.
+- 새 글은 `role="dialog"`, 확장 답글 작성창은 `role="menu"`일 수 있다. 대상 작성창의 ref와 범위를 확인한다. 확인 대화상자(`임시 저장하시겠어요?`)는 작성창과 별개의 두 번째 dialog라 작성창 범위 snapshot에는 안 잡힌다. 전체 snapshot에서 찾는다. URL을 넣을 때 빈 dialog가 추가로 생기기도 하므로 입력칸이 있는 dialog만 읽는다.
 - 입력 전 `activeElement`가 목표 `contenteditable`의 인덱스와 일치하는지 확인한다. alt 패널은 `aria-placeholder`가 `시각적으로`로 시작하는 칸을 확인한다.
 - snapshot에는 화면 밖 요소도 포함된다. ref 클릭이 스크롤을 처리해도 칸 추가가 실패하면 작성창 안에서 스크롤한 뒤 스크린샷으로 버튼 위치를 확인한다.
 - 좌표 클릭이 필요하면 스크린샷 픽셀과 뷰포트 크기의 가로·세로 배율을 각각 계산한다. 같은 좌표라고 가정하지 않는다.
 - 대기는 `sleep(ms)`다. `page.waitForTimeout`은 쓰지 않는다. 화면 전환이 확인된 경우나 영상 처리 폴링에만 기다린다. DM 입력 준비의 1초 대기는 DM 절차를 따른다.
 - `locator.screenshot()`은 `Invalid parameters`로 실패할 수 있다. 증빙과 위치 확인은 `page.screenshot()` 전체 캡처를 기본으로 쓰고, 필요하면 `scrollIntoViewIfNeeded()` 뒤에 찍는다.
-- REPL locator는 Playwright 전체 API가 아니다. `getByRole()` 같은 메서드가 `not a function`이면 snapshot ref로 요소를 잡고 `evaluate(el => el.closest('[role="dialog"]'))`로 범위를 검증한다.
+- REPL locator는 Playwright 전체 API가 아니다. `text=` 셀렉터는 invalid selector 오류가 난다. `getByRole()` 같은 메서드가 `not a function`이면 snapshot ref로 요소를 잡고 `evaluate(el => el.closest('[role="dialog"]'))`로 범위를 검증한다.
 - 사진 첨부 직후 snapshot의 textbox 라벨에 본문이 두 번 이어 붙은 것처럼 보일 수 있다. 접근성 이름 합성 문제이므로 `innerText`로 다시 읽어 판단한다.
 - `allInnerTexts()`가 지원되지 않으면 `count()`와 `nth(i).innerText()`로 읽는다. 읽기 메서드 오류를 첨부 실패로 해석해 재업로드하지 않는다.
 - 작업 중 새로고침하지 않는다. 팝업의 X를 사용하고 작성 취소 확인창은 `취소`로 닫는다.
