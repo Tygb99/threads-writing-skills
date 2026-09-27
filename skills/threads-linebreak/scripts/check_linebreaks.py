@@ -7,6 +7,10 @@
     python3 check_linebreaks.py draft.txt
     cat draft.txt | python3 check_linebreaks.py
     python3 check_linebreaks.py draft.txt --json
+    AI_GATEWAY_API_KEY=... python3 check_linebreaks.py draft.txt --jev
+
+`--jev`는 쉼표 판정을 Jev(TypeSafe)에게 물어 실제 줄 위치와 어긋나는 쉼표만 confidence 순으로 보여준다.
+판단은 여전히 사람이 하고, Jev는 볼 순서를 정할 뿐이다.
 """
 
 import argparse
@@ -55,7 +59,39 @@ def classify_comma(fragment):
     return "unclear"
 
 
-def analyze(text):
+def jev_comma_hints(paragraphs, judge):
+    """Jev 판정과 실제 쉼표 위치가 어긋나는 것만 골라 confidence 순으로 돌려준다.
+
+    judge(paragraph_lines) -> [{n, line, at_line_end, fragment, choice, p_clause, confidence}]
+    """
+    hints = []
+    stats = {"asked": 0, "agree": 0, "disagree": 0}
+    offset = 0
+    for para in paragraphs:
+        for j in judge(para):
+            stats["asked"] += 1
+            placed = "clause" if j["at_line_end"] else "list"
+            if j["choice"] == placed:
+                stats["agree"] += 1
+                continue
+            stats["disagree"] += 1
+            conf = j.get("confidence") or 0.0
+            if j["choice"] == "list":
+                detail = f"줄 끝 쉼표('{j['fragment'][-10:]},')를 Jev는 나열로 본다 (confidence {conf:.2f}). 절 경계가 맞는지 확인하라"
+            else:
+                detail = f"줄 중간 쉼표('{j['fragment'][-10:]},')를 Jev는 절 경계로 본다 (confidence {conf:.2f}). 여기서 줄을 바꿀지 보라"
+            hints.append({
+                "line": offset + j["line"],
+                "detail": detail,
+                "text": para[j["line"] - 1],
+                "jev": {"choice": j["choice"], "p_clause": j["p_clause"], "confidence": j["confidence"]},
+            })
+        offset += len(para)
+    hints.sort(key=lambda h: -(h["jev"]["confidence"] or 0))
+    return hints, stats
+
+
+def analyze(text, jev_judge=None):
     paragraphs = split_paragraphs(text)
     lines = [line for para in paragraphs for line in para]
 
@@ -132,7 +168,14 @@ def analyze(text):
         })
 
     # 판단이 필요한 쉼표 후보
+    result_jev = None
+    if jev_judge is not None:
+        # Jev가 있으면 규칙 휴리스틱 대신 Jev 판정과 어긋나는 쉼표만 보여준다.
+        jev_hints, result_jev = jev_comma_hints(paragraphs, jev_judge)
+        hints.extend(jev_hints)
     for idx, line in enumerate(lines, start=1):
+        if jev_judge is not None:
+            break  # 휴리스틱 후보는 Jev 판정으로 대체했다
         if line.rstrip().endswith(","):
             kind = classify_comma(line.rstrip()[:-1])
             if kind == "list":
@@ -172,6 +215,8 @@ def analyze(text):
         "pct_lines_ending_comma": round(100 * comma_end / len(lines)) if lines else 0,
     }
 
+    if result_jev is not None:
+        stats["jev"] = result_jev
     return {"stats": stats, "issues": issues, "hints": hints}
 
 
@@ -211,9 +256,16 @@ def render(result):
         out.append("")
         out.append("── 고칠 것 없음 ──")
 
+    if "jev" in stats:
+        j = stats["jev"]
+        out.append(
+            f"Jev 판정 쉼표 {j['asked']}개 · 줄 위치와 일치 {j['agree']} · 어긋남 {j['disagree']}"
+        )
+
     if result["hints"]:
         out.append("")
-        out.append(f"── 확인해볼 것 {len(result['hints'])}건 (판단은 사람이) ──")
+        label = "Jev와 어긋난 쉼표" if "jev" in stats else "확인해볼 것"
+        out.append(f"── {label} {len(result['hints'])}건 (판단은 사람이) ──")
         for hint in result["hints"]:
             out.append(f"[L{hint['line']}] {hint['detail']}")
             out.append(f"       {hint['text']}")
@@ -236,7 +288,23 @@ def main():
     )
     parser.add_argument("path", nargs="?", help="검사할 텍스트 파일 (없으면 표준입력)")
     parser.add_argument("--json", action="store_true", help="JSON으로 출력")
+    parser.add_argument(
+        "--jev", action="store_true",
+        help="쉼표 판정을 Jev(TypeSafe, Vercel AI Gateway)에 묻는다. AI_GATEWAY_API_KEY 필요",
+    )
     args = parser.parse_args()
+
+    judge = None
+    if args.jev:
+        try:
+            import jev_client
+        except ImportError:
+            print("jev_client.py가 같은 폴더에 없다.", file=sys.stderr)
+            return 2
+        if not jev_client.os.environ.get("AI_GATEWAY_API_KEY"):
+            print("AI_GATEWAY_API_KEY가 없다. --jev를 쓰려면 Vercel AI Gateway 키를 환경변수로 넘겨라.", file=sys.stderr)
+            return 2
+        judge = jev_client.judge_commas
 
     if args.path:
         with open(args.path, encoding="utf-8") as handle:
@@ -248,7 +316,13 @@ def main():
         print("입력이 비어 있다.", file=sys.stderr)
         return 1
 
-    result = analyze(text)
+    try:
+        result = analyze(text, jev_judge=judge)
+    except Exception as exc:  # noqa: BLE001 - Jev 실패는 검사 자체를 막지 않는다
+        if judge is None:
+            raise
+        print(f"Jev 판정 실패, 규칙 휴리스틱으로 대체한다: {exc}", file=sys.stderr)
+        result = analyze(text)
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:

@@ -71,6 +71,7 @@ alt 패널도 입력 전에 포커스를 확인하며 모든 첨부를 각각 �
 루틴은 Aside 세션 안의 `routine_update` 도구로만 만들고 고친다. `aside exec`으로 위임한다. CLI에는 루틴 명령이 없고 REPL의 `aside.routines`는 조회 전용이다.
 1회 실행은 `kind: "cron"`, `scheduleKind: "once"`, `runAt`(시간대를 포함한 ISO 시각)으로 만든다. 모델을 지정하지 않으면 Aside 기본 모델로 돈다.
 `routine_update`는 요청한 세션의 프로젝트에 속한 루틴만 찾는다. 다른 프로젝트의 루틴은 그 프로젝트 세션을 `aside session resume`으로 이어받아 고친다.
+루틴은 사람이 지켜보지 않는 실행이다. 프롬프트에 완료 기준(게시 뒤 화면 재확인·보고 항목)을 적고, 진행 보고만 남기고 멈추지 말라고 쓴다. 중복 게시를 막는 확인 단계는 그대로 둔다.
 게시 프롬프트에는 시각 가드와 같은 첫 줄 발행본 확인을 먼저 넣는다. 외장 볼륨 파일을 쓰면 권한을 `full-access`로 둔다(`guard`는 다른 폴더 접근 전에 확인을 묻는다).
 만든 뒤 `aside repl`에서 `aside.routines.get(id)`로 `runAt`·`nextRunAt`·`permissionMode`·`prompt`를 확인한다.
 루틴을 쓸 수 없을 때만 호스트 스케줄러(launchd 등)로 그 시각에 `aside exec`을 띄운다.
