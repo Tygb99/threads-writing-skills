@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # threads-writing-skills 설치 — 심링크만 건다. 복사·삭제하지 않는다.
-# 대상: Claude Code(~/.claude/skills), Codex(~/.codex/skills), Aside(~/.aside/u/0/skills/user)
+# 대상: Claude Code(~/.claude/skills), Codex(~/.codex/skills), Aside(~/.aside/u/0/skills/user),
+#       공용 폴더(~/.agents/skills — omo·Codex·Cursor·OpenCode·Pi 등이 함께 읽는다)
 # 스킬 탐색: skills/*/SKILL.md 깊이 2, LC_ALL=C 이름순. 심링크는 따라가지 않는다.
 set -euo pipefail
 
@@ -8,6 +9,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME/.codex/skills}"
 ASIDE_SKILLS_DIR="${ASIDE_SKILLS_DIR:-$HOME/.aside/u/0/skills/user}"
+AGENTS_SKILLS_DIR="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
 # 구판 install.sh가 ~/.codex/AGENTS.md에 남긴 포인터 블록. 있으면 지운다.
 LEGACY_AGENTS_FILE="${CODEX_AGENTS_FILE:-$HOME/.codex/AGENTS.md}"
 START='<!-- threads-writing-skills -->'
@@ -16,10 +18,11 @@ SKILLS="$(find "$REPO_DIR/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print 
 
 usage() {
   echo "Usage: $0 [--uninstall]"
-  echo "skills/*/SKILL.md(깊이 2, 이름순)를 찾아 세 곳에 심링크를 건다:"
+  echo "skills/*/SKILL.md(깊이 2, 이름순)를 찾아 네 곳에 심링크를 건다:"
   echo "  CLAUDE_SKILLS_DIR=$CLAUDE_SKILLS_DIR"
   echo "  CODEX_SKILLS_DIR=$CODEX_SKILLS_DIR"
   echo "  ASIDE_SKILLS_DIR=$ASIDE_SKILLS_DIR"
+  echo "  AGENTS_SKILLS_DIR=$AGENTS_SKILLS_DIR"
   echo "환경변수로 경로를 바꿀 수 있다. 상위 폴더가 없는 대상은 건너뛴다."
 }
 link_skills() {
@@ -50,7 +53,7 @@ remove_legacy_block() {
 
 if [ "${1:-}" = "--help" ]; then usage; exit 0; fi
 if [ "${1:-}" = "--uninstall" ]; then
-  for dir in "$CLAUDE_SKILLS_DIR" "$CODEX_SKILLS_DIR" "$ASIDE_SKILLS_DIR"; do unlink_skills "$dir"; done
+  for dir in "$CLAUDE_SKILLS_DIR" "$CODEX_SKILLS_DIR" "$ASIDE_SKILLS_DIR" "$AGENTS_SKILLS_DIR"; do unlink_skills "$dir"; done
   remove_legacy_block "$LEGACY_AGENTS_FILE"
   exit 0
 fi
@@ -60,9 +63,10 @@ echo "저장소: $REPO_DIR"
 echo "Claude Code:"; link_skills "$CLAUDE_SKILLS_DIR"
 echo "Codex:";      link_skills "$CODEX_SKILLS_DIR"
 echo "Aside:";      link_skills "$ASIDE_SKILLS_DIR"
+echo "공용(~/.agents/skills):"; link_skills "$AGENTS_SKILLS_DIR"
 remove_legacy_block "$LEGACY_AGENTS_FILE"
 if command -v python3 >/dev/null 2>&1; then
   printf '짧은 줄.\n' | python3 "$REPO_DIR/skills/threads-linebreak/scripts/check_linebreaks.py" >/dev/null && echo "검사 스크립트 정상 동작"
 else echo "python3 이 없어 검사 스크립트를 확인하지 못했다"; fi
-echo "Claude Code·Codex·Aside를 새로 시작해야 스킬이 인식된다"
-echo "인식 확인: Claude Code는 /threads-linebreak 등 스킬 목록, Codex는 \$threads-linebreak 멘션이나 /skills 목록, Aside는 aside skills list"
+echo "Claude Code·Codex·Aside·omo 등 에이전트를 새로 시작해야 스킬이 인식된다"
+echo "인식 확인: Claude Code는 /threads-linebreak 등 스킬 목록, Codex는 \$threads-linebreak 멘션이나 /skills 목록, Aside는 aside skills list, omo는 새 세션의 스킬 목록"
