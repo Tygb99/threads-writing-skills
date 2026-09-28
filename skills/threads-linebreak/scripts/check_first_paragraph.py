@@ -2,7 +2,7 @@
 """첫 문단의 형태를 점검하는 표준 라이브러리 검사기.
 
 `--jev`를 주면 주어 유형(사건형/작업물형/기타)과 첫 줄 미완결 여부를 Jev에게 묻는다.
-주어 판정은 참고값이며 최종 판단은 사람이 한다. AI_GATEWAY_API_KEY가 필요하다.
+주어 판정은 참고값이며 최종 판단은 사람이 한다. TYPESAFE_API_KEY(또는 AI_GATEWAY_API_KEY)가 필요하다.
 """
 
 import argparse
@@ -105,7 +105,7 @@ def main():
     parser = argparse.ArgumentParser(description="Threads 첫 문단 형태 검사기")
     parser.add_argument("path", nargs="?", help="검사할 텍스트 파일 (없으면 표준입력)")
     parser.add_argument("--json", action="store_true", help="JSON으로 출력")
-    parser.add_argument("--jev", action="store_true", help="주어 유형·미완결을 Jev에 묻는다. AI_GATEWAY_API_KEY 필요")
+    parser.add_argument("--jev", action="store_true", help="주어 유형·미완결을 Jev에 묻는다. TYPESAFE_API_KEY 또는 AI_GATEWAY_API_KEY 필요")
     args = parser.parse_args()
     judge = None
     if args.jev:
@@ -114,8 +114,8 @@ def main():
         except ImportError:
             print("jev_client.py가 같은 폴더에 없다.", file=sys.stderr)
             return 2
-        if not jev_client.os.environ.get("AI_GATEWAY_API_KEY"):
-            print("AI_GATEWAY_API_KEY가 없다. --jev를 쓰려면 Vercel AI Gateway 키를 환경변수로 넘겨라.", file=sys.stderr)
+        if not jev_client.has_key():
+            print("TYPESAFE_API_KEY(또는 AI_GATEWAY_API_KEY)가 없다. --jev를 쓰려면 키를 환경변수로 넘겨라.", file=sys.stderr)
             return 2
         judge = jev_client.judge_first_paragraph
     text = open(args.path, encoding="utf-8").read() if args.path else sys.stdin.read()

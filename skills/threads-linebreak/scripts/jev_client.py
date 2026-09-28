@@ -19,6 +19,10 @@ import urllib.request
 
 ENDPOINT = os.environ.get("JEV_ENDPOINT", "https://ai-gateway.vercel.sh/v1/evaluate")
 MODEL = os.environ.get("JEV_MODEL", "typesafe-ai/jev")
+# TypeSafe 직접 API. Vercel 무료 티어는 2026-09-25 프로모션 종료 후 Jev를 403으로 막는다.
+# TYPESAFE_API_KEY가 있으면 이쪽을 먼저 쓴다.
+TS_ENDPOINT = os.environ.get("TYPESAFE_ENDPOINT", "https://api.typesafe.ai/v1/systemone")
+TS_MODEL = os.environ.get("TYPESAFE_MODEL", "jev-latest")
 TIMEOUT_SEC = 60
 RETRIES = 6  # 업스트림 429(high demand)가 잦다. 지수 백오프로 버틴다.
 
@@ -54,19 +58,47 @@ class JevUnavailable(RuntimeError):
     """키가 없거나 요청이 끝내 실패했을 때."""
 
 
-def _key() -> str:
-    key = os.environ.get("AI_GATEWAY_API_KEY", "").strip()
-    if not key:
-        raise JevUnavailable("AI_GATEWAY_API_KEY가 없다. Vercel AI Gateway 키를 환경변수로 넘겨라")
-    return key
+def has_key() -> bool:
+    return bool(os.environ.get("TYPESAFE_API_KEY", "").strip() or os.environ.get("AI_GATEWAY_API_KEY", "").strip())
+
+
+def _backend() -> tuple[str, str, str]:
+    """(이름, 엔드포인트, 키). TypeSafe 직접 키가 있으면 우선한다."""
+    ts = os.environ.get("TYPESAFE_API_KEY", "").strip()
+    if ts:
+        return "typesafe", TS_ENDPOINT, ts
+    gw = os.environ.get("AI_GATEWAY_API_KEY", "").strip()
+    if gw:
+        return "vercel", ENDPOINT, gw
+    raise JevUnavailable("TYPESAFE_API_KEY 또는 AI_GATEWAY_API_KEY가 없다")
+
+
+def _to_typesafe(questions: dict) -> dict:
+    # TypeSafe는 예/아니오 질문 타입 이름이 boolean이 아니라 noul이다.
+    return {k: ({**q, "type": "noul"} if q.get("type") == "boolean" else q) for k, q in questions.items()}
+
+
+def _from_typesafe(answers: dict) -> dict:
+    # 호출하는 쪽은 Vercel 형식({type: boolean, probability})을 기대한다.
+    out = {}
+    for k, a in (answers or {}).items():
+        if isinstance(a, dict) and a.get("type") == "noul":
+            out[k] = {"type": "boolean", "probability": a.get("noul")}
+        else:
+            out[k] = a
+    return out
 
 
 def evaluate(state, questions: dict) -> dict:
-    """`/v1/evaluate` 한 번 호출. answers dict를 돌려준다."""
-    key = _key()
-    body = json.dumps({"model": MODEL, "state": state, "questions": questions}).encode("utf-8")
+    """Jev 한 번 호출. answers dict를 Vercel 형식으로 돌려준다."""
+    backend, endpoint, key = _backend()
+    if backend == "typesafe":
+        payload = {"model": TS_MODEL, "state": state, "questions": _to_typesafe(questions)}
+    else:
+        payload = {"model": MODEL, "state": state, "questions": questions}
+    body = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
-        ENDPOINT,
+        endpoint,
         data=body,
         method="POST",
         headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
@@ -76,7 +108,8 @@ def evaluate(state, questions: dict) -> dict:
         try:
             with urllib.request.urlopen(req, timeout=TIMEOUT_SEC) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-            return data.get("answers", {})
+            answers = data.get("answers", {})
+            return _from_typesafe(answers) if backend == "typesafe" else answers
         except urllib.error.HTTPError as exc:
             last = f"HTTP {exc.code}"
             if exc.code not in (429, 500, 502, 503, 504):

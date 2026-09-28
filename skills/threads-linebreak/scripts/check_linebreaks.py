@@ -7,7 +7,7 @@
     python3 check_linebreaks.py draft.txt
     cat draft.txt | python3 check_linebreaks.py
     python3 check_linebreaks.py draft.txt --json
-    AI_GATEWAY_API_KEY=... python3 check_linebreaks.py draft.txt --jev
+    TYPESAFE_API_KEY=... python3 check_linebreaks.py draft.txt --jev
 
 `--jev`는 쉼표 판정을 Jev(TypeSafe)에게 물어 실제 줄 위치와 어긋나는 쉼표만 confidence 순으로 보여준다.
 판단은 여전히 사람이 하고, Jev는 볼 순서를 정할 뿐이다.
@@ -290,7 +290,7 @@ def main():
     parser.add_argument("--json", action="store_true", help="JSON으로 출력")
     parser.add_argument(
         "--jev", action="store_true",
-        help="쉼표 판정을 Jev(TypeSafe, Vercel AI Gateway)에 묻는다. AI_GATEWAY_API_KEY 필요",
+        help="쉼표 판정을 Jev(TypeSafe)에 묻는다. TYPESAFE_API_KEY 또는 AI_GATEWAY_API_KEY 필요",
     )
     args = parser.parse_args()
 
@@ -301,8 +301,8 @@ def main():
         except ImportError:
             print("jev_client.py가 같은 폴더에 없다.", file=sys.stderr)
             return 2
-        if not jev_client.os.environ.get("AI_GATEWAY_API_KEY"):
-            print("AI_GATEWAY_API_KEY가 없다. --jev를 쓰려면 Vercel AI Gateway 키를 환경변수로 넘겨라.", file=sys.stderr)
+        if not jev_client.has_key():
+            print("TYPESAFE_API_KEY(또는 AI_GATEWAY_API_KEY)가 없다. --jev를 쓰려면 키를 환경변수로 넘겨라.", file=sys.stderr)
             return 2
         judge = jev_client.judge_commas
 

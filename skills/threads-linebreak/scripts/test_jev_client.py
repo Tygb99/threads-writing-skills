@@ -90,5 +90,28 @@ class FirstParagraphJevTests(unittest.TestCase):
         self.assertTrue(check_first_paragraph.report(result).endswith("주어는 사람이 정한다"))
 
 
+class TypeSafeTranslationTests(unittest.TestCase):
+    def test_boolean_becomes_noul_and_back(self):
+        q = jev_client._to_typesafe({"a": {"type": "boolean", "instructions": "x"}, "b": {"type": "choice", "criteria": {}}})
+        self.assertEqual(q["a"]["type"], "noul")
+        self.assertEqual(q["b"]["type"], "choice")
+        a = jev_client._from_typesafe({"a": {"type": "noul", "noul": 0.7}, "b": {"type": "choice", "choice": "x"}})
+        self.assertEqual(a["a"], {"type": "boolean", "probability": 0.7})
+        self.assertEqual(a["b"]["choice"], "x")
+
+    def test_typesafe_key_preferred(self):
+        old = {k: os.environ.pop(k, None) for k in ("TYPESAFE_API_KEY", "AI_GATEWAY_API_KEY")}
+        try:
+            os.environ["AI_GATEWAY_API_KEY"] = "g"
+            self.assertEqual(jev_client._backend()[0], "vercel")
+            os.environ["TYPESAFE_API_KEY"] = "t"
+            self.assertEqual(jev_client._backend()[0], "typesafe")
+        finally:
+            for k in ("TYPESAFE_API_KEY", "AI_GATEWAY_API_KEY"):
+                os.environ.pop(k, None)
+                if old[k] is not None:
+                    os.environ[k] = old[k]
+
+
 if __name__ == "__main__":
     unittest.main()
