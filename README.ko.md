@@ -1,6 +1,6 @@
 # threads-writing-skills
 
-규칙은 감이 아니라 측정값이다. Threads 공식 API 리포트 4개월치에서 캡션과 자답글 397건을 줄 단위로 집계해 만든 한국어 글쓰기 스킬 모음이다. Claude Code·Codex 플러그인으로 배포하며 Aside용 설치 스크립트도 제공한다.
+Threads용 한국어 글쓰기 스킬 모음이다. Claude Code·Codex 플러그인으로 배포하며 Aside용 설치 스크립트도 제공한다.
 
 ![같은 글, 줄바꿈만 다르다](assets/before-after.png)
 
@@ -56,7 +56,7 @@ python3 skills/threads-linebreak/scripts/check_linebreaks.py draft.txt
 
 ### Jev 판정 (`--jev`, 실험)
 
-1.1.0에서 추가했다. 두 검사기(`check_linebreaks.py`, `check_first_paragraph.py`)에 `--jev`를 붙이면 사람에게 넘기던 판정을 Jev에게 먼저 묻는다. Jev는 TypeSafe의 System One 모델이고 Vercel AI Gateway(`typesafe-ai/jev`)로 호출한다.
+두 검사기(`check_linebreaks.py`, `check_first_paragraph.py`)에 `--jev`를 붙이면 사람에게 넘기던 판정을 Jev에게 먼저 묻는다. Jev는 TypeSafe의 System One 모델이고 Vercel AI Gateway(`typesafe-ai/jev`)로 호출한다.
 
 ```bash
 AI_GATEWAY_API_KEY=... python3 skills/threads-linebreak/scripts/check_linebreaks.py draft.txt --jev
@@ -66,8 +66,7 @@ AI_GATEWAY_API_KEY=... python3 skills/threads-linebreak/scripts/check_first_para
 - 줄바꿈 검사기는 쉼표마다 절 경계인지 나열인지 판정하고, 실제 줄 위치와 어긋난 것만 confidence 순으로 보여 준다
 - 첫 문단 검사기는 주어 유형(사건형·작업물형·기타)과 첫 줄 미완결 확률을 덧붙인다
 - 환경변수 `AI_GATEWAY_API_KEY`가 필요하다. 없으면 종료 코드 2다. 호출이 실패하면 규칙 기반 판정으로 대체하고 이유를 stderr에 남긴다
-- `--jev`를 붙이지 않으면 이전과 똑같이 외부 호출 없이 돈다. `--jev`를 붙이면 검사할 문단이 Vercel AI Gateway로 전송된다
-- 실측(2026-09-22): 사람 라벨 46개 기준 정확도 89.1%, confidence 0.7 이상만 추리면 96.8%다. 표본이 작아 참고치로 본다
+- `--jev`를 붙이지 않으면 외부 호출 없이 돈다. `--jev`를 붙이면 검사할 문단이 Vercel AI Gateway로 전송된다
 - Jev 값은 볼 순서를 정할 뿐이다. 최종 판단은 사람이 한다
 
 ## 설치
@@ -111,19 +110,11 @@ cd threads-writing-skills
 | Codex | `~/.codex/skills` | `CODEX_SKILLS_DIR` |
 | 공용 폴더 | `~/.agents/skills` | `AGENTS_SKILLS_DIR` |
 
-공용 폴더 `~/.agents/skills`는 Agent Skills 표준 위치다. omo, Codex, Cursor, OpenCode, Pi가 이 폴더를 읽는다(2026-09-27 각 공식 문서와 omo·Codex 실행으로 확인). Claude Code와 Aside는 자기 폴더만 읽어서 따로 건다. Codex 0.157.0은 `~/.codex/skills`와 `~/.agents/skills`에 같은 스킬이 있어도 한 번만 보여 준다.
+공용 폴더 `~/.agents/skills`는 Agent Skills 표준 위치다. omo, Codex, Cursor, OpenCode, Pi가 이 폴더를 읽는다. Claude Code와 Aside는 자기 폴더만 읽어서 따로 건다. Codex 0.157.0은 `~/.codex/skills`와 `~/.agents/skills`에 같은 스킬이 있어도 한 번만 보여 준다.
 
 제거는 `./install.sh --uninstall`이다. 인식 확인 전에 에이전트를 새로 시작해야 한다.
 
 브라우저 발행은 Aside가 실행 중이고 Threads에 로그인되어 있다는 전제다.
-
-## 변경 이력
-
-- 1.1.0 (2026-09-27)
-  - `threads-linebreak` 검사기에 Jev 판정 옵션 `--jev` 추가(실험)
-  - `install.sh`가 공용 스킬 폴더 `~/.agents/skills`에도 심링크를 건다
-  - `threads-web-publish` 위임 프롬프트와 루틴 프롬프트에 완료 기준, 외부 텍스트 취급 문장 추가
-- 1.0.0 (2026-09-22): 플러그인 배포 형식으로 공개
 
 ## 라이선스
 

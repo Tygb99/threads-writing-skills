@@ -19,7 +19,7 @@ import urllib.request
 
 ENDPOINT = os.environ.get("JEV_ENDPOINT", "https://ai-gateway.vercel.sh/v1/evaluate")
 MODEL = os.environ.get("JEV_MODEL", "typesafe-ai/jev")
-# TypeSafe 직접 API. Vercel 무료 티어는 2026-09-25 프로모션 종료 후 Jev를 403으로 막는다.
+# TypeSafe 직접 API. Vercel 무료 티어는 Jev 요청에 403을 반환할 수 있다.
 # TYPESAFE_API_KEY가 있으면 이쪽을 먼저 쓴다.
 TS_ENDPOINT = os.environ.get("TYPESAFE_ENDPOINT", "https://api.typesafe.ai/v1/systemone")
 TS_MODEL = os.environ.get("TYPESAFE_MODEL", "jev-latest")

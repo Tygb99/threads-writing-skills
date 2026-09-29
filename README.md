@@ -1,6 +1,6 @@
 # threads-writing-skills
 
-Measured Korean writing skills for Threads, based on 397 captions and self-replies from four months of official Threads API reports. The rules are measured rather than guessed: 397 posts were counted line by line. The same skills are distributed as Claude Code and Codex plugins, with an install script for Aside.
+Korean writing skills for Threads. The same skills are distributed as Claude Code and Codex plugins, with an install script for Aside.
 
 ![Same post, different line breaks](assets/before-after.png)
 
@@ -56,7 +56,7 @@ Add `--json` for machine-readable output. The checker uses Python 3.8+ standard 
 
 ### Jev judgment (`--jev`, experimental)
 
-Added in 1.1.0. Pass `--jev` to either checker (`check_linebreaks.py`, `check_first_paragraph.py`) to ask Jev first for the judgments that were left to a human. Jev is TypeSafe's System One model, called through Vercel AI Gateway (`typesafe-ai/jev`).
+Pass `--jev` to either checker (`check_linebreaks.py`, `check_first_paragraph.py`) to ask Jev first for the judgments that were left to a human. Jev is TypeSafe's System One model, called through Vercel AI Gateway (`typesafe-ai/jev`).
 
 ```bash
 AI_GATEWAY_API_KEY=... python3 skills/threads-linebreak/scripts/check_linebreaks.py draft.txt --jev
@@ -66,8 +66,7 @@ AI_GATEWAY_API_KEY=... python3 skills/threads-linebreak/scripts/check_first_para
 - The line-break checker classifies each comma as a clause boundary or a list comma and shows only the ones that disagree with the actual line position, ordered by confidence
 - The first-paragraph checker adds the subject type (event, artifact, other) and the probability that the first line is left open
 - The `AI_GATEWAY_API_KEY` environment variable is required; without it the checker exits 2. When the call fails, the checker falls back to rule-based judgment and writes the reason to stderr
-- Without `--jev` nothing leaves your machine, as before. With `--jev` the paragraph under check is sent to Vercel AI Gateway
-- Measured on 2026-09-22: 89.1% accuracy against 46 human labels, 96.8% when limited to confidence 0.7 or higher. The sample is small, so treat it as a reference value
+- Without `--jev` nothing leaves your machine. With `--jev` the paragraph under check is sent to Vercel AI Gateway
 - Jev only decides what to look at first. The final call stays with a human
 
 ## Install
@@ -111,19 +110,11 @@ The script symlinks each skill into four places, so a checkout can be used direc
 | Codex | `~/.codex/skills` | `CODEX_SKILLS_DIR` |
 | Shared folder | `~/.agents/skills` | `AGENTS_SKILLS_DIR` |
 
-The shared folder `~/.agents/skills` is the Agent Skills standard location. omo, Codex, Cursor, OpenCode, and Pi read it (checked on 2026-09-27 against each project's official docs and by running omo and Codex). Claude Code and Aside read only their own folders, so they are linked separately. Codex 0.157.0 lists a skill once even when it exists in both `~/.codex/skills` and `~/.agents/skills`.
+The shared folder `~/.agents/skills` is the Agent Skills standard location. omo, Codex, Cursor, OpenCode, and Pi read it. Claude Code and Aside read only their own folders, so they are linked separately. Codex 0.157.0 lists a skill once even when it exists in both `~/.codex/skills` and `~/.agents/skills`.
 
 Remove the links with `./install.sh --uninstall`. Start the agents again before checking recognition.
 
 Browser publishing assumes Aside is running and logged in to Threads.
-
-## Changelog
-
-- 1.1.0 (2026-09-27)
-  - Added the experimental Jev judgment option `--jev` to the `threads-linebreak` checkers
-  - `install.sh` now also links into the shared skills folder `~/.agents/skills`
-  - Added completion criteria and external-text handling lines to the `threads-web-publish` delegation and routine prompts
-- 1.0.0 (2026-09-22): first release in plugin format
 
 ## License
 

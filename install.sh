@@ -10,7 +10,7 @@ CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME/.codex/skills}"
 ASIDE_SKILLS_DIR="${ASIDE_SKILLS_DIR:-$HOME/.aside/u/0/skills/user}"
 AGENTS_SKILLS_DIR="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
-# 구판 install.sh가 ~/.codex/AGENTS.md에 남긴 포인터 블록. 있으면 지운다.
+# ~/.codex/AGENTS.md에 남아 있는 이 스킬의 포인터 블록은 제거한다.
 LEGACY_AGENTS_FILE="${CODEX_AGENTS_FILE:-$HOME/.codex/AGENTS.md}"
 START='<!-- threads-writing-skills -->'
 END='<!-- /threads-writing-skills -->'
@@ -48,7 +48,7 @@ remove_legacy_block() {
   grep -qF "$START" "$file" || return 0
   tmp="$(mktemp "${TMPDIR:-/tmp}/threads-agents.XXXXXX")"
   awk -v start="$START" -v end="$END" 'index($0,start){skip=1; next} index($0,end){skip=0; next} !skip{print}' "$file" > "$tmp"
-  mv "$tmp" "$file"; echo "  구판 포인터 블록 제거됨: $file"
+  mv "$tmp" "$file"; echo "  포인터 블록 제거됨: $file"
 }
 
 if [ "${1:-}" = "--help" ]; then usage; exit 0; fi
