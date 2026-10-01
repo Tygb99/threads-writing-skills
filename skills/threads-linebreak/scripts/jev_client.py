@@ -23,6 +23,9 @@ MODEL = os.environ.get("JEV_MODEL", "typesafe-ai/jev")
 # TYPESAFE_API_KEY가 있으면 이쪽을 먼저 쓴다.
 TS_ENDPOINT = os.environ.get("TYPESAFE_ENDPOINT", "https://api.typesafe.ai/v1/systemone")
 TS_MODEL = os.environ.get("TYPESAFE_MODEL", "jev-latest")
+# OpenRouter도 같은 /v1/systemone 형식을 준다. Inception Mercury Decide 무료 모델 등.
+OR_ENDPOINT = os.environ.get("OPENROUTER_SYSTEMONE_ENDPOINT", "https://openrouter.ai/api/v1/systemone")
+OR_MODEL = os.environ.get("OPENROUTER_DECIDE_MODEL", "inception/mercury-decide:free")
 TIMEOUT_SEC = 60
 RETRIES = 6  # 업스트림 429(high demand)가 잦다. 지수 백오프로 버틴다.
 
@@ -59,18 +62,26 @@ class JevUnavailable(RuntimeError):
 
 
 def has_key() -> bool:
-    return bool(os.environ.get("TYPESAFE_API_KEY", "").strip() or os.environ.get("AI_GATEWAY_API_KEY", "").strip())
+    return any(os.environ.get(k, "").strip() for k in ("TYPESAFE_API_KEY", "OPENROUTER_API_KEY", "AI_GATEWAY_API_KEY"))
 
 
 def _backend() -> tuple[str, str, str]:
-    """(이름, 엔드포인트, 키). TypeSafe 직접 키가 있으면 우선한다."""
-    ts = os.environ.get("TYPESAFE_API_KEY", "").strip()
-    if ts:
-        return "typesafe", TS_ENDPOINT, ts
-    gw = os.environ.get("AI_GATEWAY_API_KEY", "").strip()
-    if gw:
-        return "vercel", ENDPOINT, gw
-    raise JevUnavailable("TYPESAFE_API_KEY 또는 AI_GATEWAY_API_KEY가 없다")
+    """(이름, 엔드포인트, 키).
+
+    JEV_BACKEND(typesafe|openrouter|vercel)가 있으면 그것만 쓴다.
+    없으면 typesafe → openrouter → vercel 순서로 키가 있는 쪽을 쓴다.
+    """
+    keys = {
+        "typesafe": (TS_ENDPOINT, os.environ.get("TYPESAFE_API_KEY", "").strip()),
+        "openrouter": (OR_ENDPOINT, os.environ.get("OPENROUTER_API_KEY", "").strip()),
+        "vercel": (ENDPOINT, os.environ.get("AI_GATEWAY_API_KEY", "").strip()),
+    }
+    want = os.environ.get("JEV_BACKEND", "").strip().lower()
+    order = [want] if want else ["typesafe", "openrouter", "vercel"]
+    for name in order:
+        if name in keys and keys[name][1]:
+            return name, keys[name][0], keys[name][1]
+    raise JevUnavailable(f"사용할 키가 없다 (JEV_BACKEND={want or '자동'})")
 
 
 def _to_typesafe(questions: dict) -> dict:
@@ -92,8 +103,9 @@ def _from_typesafe(answers: dict) -> dict:
 def evaluate(state, questions: dict) -> dict:
     """Jev 한 번 호출. answers dict를 Vercel 형식으로 돌려준다."""
     backend, endpoint, key = _backend()
-    if backend == "typesafe":
-        payload = {"model": TS_MODEL, "state": state, "questions": _to_typesafe(questions)}
+    if backend in ("typesafe", "openrouter"):
+        model = TS_MODEL if backend == "typesafe" else OR_MODEL
+        payload = {"model": model, "state": state, "questions": _to_typesafe(questions)}
     else:
         payload = {"model": MODEL, "state": state, "questions": questions}
     body = json.dumps(payload).encode("utf-8")
@@ -109,7 +121,7 @@ def evaluate(state, questions: dict) -> dict:
             with urllib.request.urlopen(req, timeout=TIMEOUT_SEC) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             answers = data.get("answers", {})
-            return _from_typesafe(answers) if backend == "typesafe" else answers
+            return _from_typesafe(answers) if backend in ("typesafe", "openrouter") else answers
         except urllib.error.HTTPError as exc:
             last = f"HTTP {exc.code}"
             if exc.code not in (429, 500, 502, 503, 504):
