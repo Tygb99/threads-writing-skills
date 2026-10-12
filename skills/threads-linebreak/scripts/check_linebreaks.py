@@ -22,6 +22,15 @@ from collections import Counter
 MAX_LINE_CHARS = 40
 MAX_PARAGRAPH_LINES = 4
 
+# URL(http:// 또는 https://)이 들어 있는 줄은 길이 검사에서 뺀다. 링크는 끊을 수 없다.
+URL_RE = re.compile(r"https?://")
+
+
+def length_checked(line):
+    """줄 길이 검사 대상인지. URL이 들어 있는 줄은 대상이 아니다."""
+    return not URL_RE.search(line)
+
+
 # 절 경계 신호가 되는 연결어미. 이걸로 끝나는 쉼표는 줄바꿈 자리다.
 # 대표 형태(-는데, -하고, -지만, -는지 …)를 포함하도록 일반화했다.
 CLAUSE_ENDING_RE = re.compile(
@@ -101,7 +110,7 @@ def analyze(text, jev_judge=None):
     # 규칙 위반: 긴 줄
     for idx, line in enumerate(lines, start=1):
         length = len(line)
-        if length > MAX_LINE_CHARS:
+        if length > MAX_LINE_CHARS and length_checked(line):
             suggestion = ""
             if "," in line:
                 head = line.split(",")[0]
@@ -203,10 +212,10 @@ def analyze(text, jev_judge=None):
         "lines": len(lines),
         "chars_excluding_newlines": sum(line_lengths),
         "avg_line_chars": round(sum(line_lengths) / len(line_lengths), 1) if line_lengths else 0,
-        "lines_over_limit": sum(1 for n in line_lengths if n > MAX_LINE_CHARS),
+        "lines_over_limit": sum(1 for line in lines if len(line) > MAX_LINE_CHARS and length_checked(line)),
         "pct_lines_within_limit": round(
-            100 * sum(1 for n in line_lengths if n <= MAX_LINE_CHARS) / len(line_lengths)
-        ) if line_lengths else 0,
+            100 * sum(1 for line in lines if len(line) <= MAX_LINE_CHARS or not length_checked(line)) / len(lines)
+        ) if lines else 0,
         "paragraph_line_counts": [len(p) for p in paragraphs],
         "pct_paragraphs_1_2_lines": round(
             100 * sum(1 for p in paragraphs if len(p) <= 2) / len(paragraphs)
@@ -279,7 +288,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "보고 항목:\n"
-            f"  위반 — 40자 초과 줄 / {MAX_PARAGRAPH_LINES}줄 초과 문단 / 해시태그 위치(마지막 단독 문단이 아닌 곳)\n"
+            f"  위반 — 40자 초과 줄(URL이 든 줄은 제외) / {MAX_PARAGRAPH_LINES}줄 초과 문단 / 해시태그 위치(마지막 단독 문단이 아닌 곳)\n"
             "  분포 — 줄 길이 / 문단 길이 / 줄 끝 문자(쉼표·마침표 등)\n"
             "  판단 보류 — 줄 끝 쉼표는 연결어미인지 나열인지 문맥을 봐야 하므로 후보만 표시한다\n"
             "  입력 — 파일 인자 하나 또는 표준입력만 읽으며 파일 탐색은 하지 않는다\n"

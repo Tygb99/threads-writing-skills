@@ -18,6 +18,12 @@ class LinebreakTests(unittest.TestCase):
         self.assertEqual(check_linebreaks.analyze("가" * 40)["issues"], [])
         self.assertTrue(check_linebreaks.analyze("가" * 41)["issues"])
 
+    def test_url_line_exempt_from_length(self):
+        url_line = "이슈 https://github.com/code-yeongyu/oh-my-openagent/issues/9887"
+        self.assertGreater(len(url_line), 50)
+        self.assertEqual(check_linebreaks.analyze(url_line)["issues"], [])
+        self.assertTrue(check_linebreaks.analyze("가" * 41)["issues"])
+
     def test_paragraph_boundary(self):
         good = "\n".join(["가"] * 4)
         bad = "\n".join(["가"] * 5)

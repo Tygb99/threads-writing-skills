@@ -27,7 +27,7 @@ Both sides are 152 characters; line breaks change reading speed, not length.
 
 ## Rules in short
 
-- Aim for 25 characters per line; 40 is the upper limit
+- Aim for 25 characters per line; 40 is the upper limit (lines containing a URL are exempt)
 - Keep paragraphs to 4 lines or fewer
 - Break after commas that end a clause, not commas in lists or numbers
 - Omit sentence-ending periods; preserve periods in URLs, numbers, versions, and filenames
